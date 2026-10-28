@@ -1,0 +1,21 @@
+# Versiones fijas: todo el grupo tiene que instalar exactamente lo mismo.
+# Probado con Python 3.12.
+
+# Interfaz
+streamlit==1.66.1
+
+# Embeddings con ESM-2 (corre en CPU)
+torch==2.14.1
+transformers==5.21.0
+huggingface-hub==2.3.0
+tokenizers==0.23.3
+safetensors==0.8.0
+
+# Datos y clasificador
+numpy==2.5.4
+pandas==3.1.0
+scikit-learn==1.9.1
+joblib==1.6.0
+
+# Tests
+pytest==9.2.0

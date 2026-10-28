@@ -1,0 +1,15 @@
+# Entorno virtual (cada una lo crea con requirements.txt)
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Artefactos pesados: se regeneran con scripts/construir_artefactos.py o vienen del notebook.
+# El catálogo (CSV) sí se versiona: es chico y es la fuente de todo.
+artifacts/*.npy
+artifacts/*.joblib
+
+# macOS
+.DS_Store
