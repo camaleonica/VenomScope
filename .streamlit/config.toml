@@ -1,0 +1,25 @@
+# Misma paleta que el mapa 3D, para que toda la app se vea igual.
+[theme]
+base = "dark"
+backgroundColor = "#09090b"
+secondaryBackgroundColor = "#18181b"
+textColor = "#e4e4e7"
+primaryColor = "#d95926"
+borderColor = "#27272a"
+linkColor = "#3987e5"
+baseRadius = "small"
+
+# Los números y el código en monoespaciada, como en el mapa. El texto corrido
+# queda en la tipografía normal: en monoespaciada se lee bastante peor.
+codeFont = "JetBrains Mono, SFMono-Regular, Menlo, Consolas, monospace"
+codeBackgroundColor = "#18181b"
+
+# Los colores de los gráficos, por si algún día se agrega otro: son los mismos
+# tres validados que usa el mapa.
+chartCategoricalColors = ["#3987e5", "#d95926", "#199e70"]
+
+[client]
+toolbarMode = "minimal"
+
+[browser]
+gatherUsageStats = false

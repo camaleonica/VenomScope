@@ -25,7 +25,7 @@ El catálogo va en gris y las familias se identifican con texto, no con color.
 import numpy as np
 import plotly.graph_objects as go
 
-from venomscope.iconos import con_icono
+from venomscope.grupos import nombre as nombre_grupo
 
 # Paleta validada contra el fondo oscuro (ver dataviz/references/palette.md).
 # Son los pasos "dark" de la misma paleta, no los claros bajados de brillo: el modo
@@ -58,7 +58,7 @@ CAMARA_INICIAL = dict(eye=dict(x=1.15, y=1.15, z=0.75))
 def _hover(cat) -> list[str]:
     return [
         f"<b>{f.nombre_proteina.split(' (')[0][:55]}</b><br>"
-        f"{f.especie}  ·  {con_icono(f.grupo)}<br>"
+        f"{f.especie}  ·  {nombre_grupo(f.grupo)}<br>"
         f"{f.clase}<extra></extra>"
         for f in cat.itertuples()
     ]

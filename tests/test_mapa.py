@@ -1,7 +1,7 @@
 import pytest
 
 from venomscope.analisis import ARTIFACTS, Motor
-from venomscope.iconos import ICONOS_GRUPO, con_icono
+from venomscope.grupos import NOMBRES, nombre as nombre_grupo
 from venomscope.mapa import figura_3d
 
 if not (ARTIFACTS / "proyeccion3d.joblib").exists():
@@ -15,13 +15,15 @@ def motor():
     return Motor()
 
 
-def test_todos_los_grupos_del_catalogo_tienen_icono(motor):
-    assert set(motor.catalogo["grupo"]) <= set(ICONOS_GRUPO)
+def test_todos_los_grupos_del_catalogo_tienen_nombre(motor):
+    assert set(motor.catalogo["grupo"]) <= set(NOMBRES)
 
 
-def test_el_icono_viene_con_el_nombre_escrito():
-    assert con_icono("arana") == "🕷️ araña"
-    assert "serpiente" in con_icono("serpiente")
+def test_los_nombres_de_grupo_se_escriben_bien_y_sin_emojis():
+    assert nombre_grupo("arana") == "Araña"
+    assert nombre_grupo("escorpion") == "Escorpión"
+    assert all(n.isascii() or n.isprintable() for n in NOMBRES.values())
+    assert not any(ord(c) > 0x2100 for n in NOMBRES.values() for c in n)
 
 
 def test_el_mapa_solo_muestra_el_catalogo_si_no_hay_secuencia(motor):

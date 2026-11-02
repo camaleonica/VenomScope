@@ -23,8 +23,8 @@ def app():
 
 
 def test_la_app_abre_con_sus_tres_pestanas(app):
-    assert [t.label for t in app.tabs] == ["Analizar una secuencia", "Analizar una campaña",
-                                           "Cómo leer los resultados"]
+    assert [t.label for t in app.tabs] == ["Una secuencia", "Una campaña entera",
+                                           "Cómo leer esto"]
     assert not app.error
 
 

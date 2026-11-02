@@ -14,7 +14,7 @@ import pandas as pd
 from venomscope import clasificador, novedad, prioridad
 from venomscope.clasificador import Prediccion
 from venomscope.embeddings import MODELO, embeber
-from venomscope.iconos import icono
+from venomscope.grupos import nombre as nombre_grupo
 from venomscope.novedad import ResultadoNovedad
 from venomscope.prioridad import Prioridad
 from venomscope.validacion import ResultadoValidacion, validar
@@ -120,15 +120,15 @@ def tabla_resultados(resultados: list[Resultado]) -> pd.DataFrame:
             "Confianza": round(r.prediccion.confianza, 3),
             "Novedad (0-100)": round(r.novedad.puntaje),
             "Nivel de novedad": r.novedad.nivel,
-            "Más parecida a": f"{icono(r.vecinos.loc[0, 'grupo'])} "
-                              f"{r.vecinos.loc[0, 'nombre_proteina'].split(' (')[0]} "
+            "Más parecida a": f"{r.vecinos.loc[0, 'nombre_proteina'].split(' (')[0]} "
                               f"({r.vecinos.loc[0, 'especie']})",
+            "Grupo": nombre_grupo(r.vecinos.loc[0, "grupo"]),
             "Motivo": " ".join(r.prioridad.razones),
             "Avisos": " ".join(r.advertencias),
             "Largo": len(r.validacion.secuencia),
         })
     columnas = ["Muestra", "Prioridad", "Familia probable", "Confianza", "Novedad (0-100)",
-                "Nivel de novedad", "Más parecida a", "Motivo", "Avisos", "Largo"]
+                "Nivel de novedad", "Más parecida a", "Grupo", "Motivo", "Avisos", "Largo"]
     tabla = pd.DataFrame(filas).reindex(columns=columnas)
     orden = {**prioridad.ORDEN, SIN_ANALIZAR: len(prioridad.ORDEN)}
     return (tabla.assign(_orden=tabla["Prioridad"].map(orden))
