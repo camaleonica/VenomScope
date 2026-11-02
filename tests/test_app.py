@@ -58,3 +58,38 @@ def test_campana_de_demostracion(app):
     assert metricas["Secuencias"] == "11"
     assert metricas["No analizadas"] == "1"
     assert len(app.dataframe) >= 2   # la tabla de la campaña + los vecinos del detalle
+
+
+def test_el_deslizante_arranca_en_90(app):
+    app.selectbox(key="ejemplo").select("El caso difícil: ShK (anémona de mar)").run()
+    app.button[0].click().run()
+    assert app.slider(key="umbral_una").value == 90
+
+
+def test_mover_el_deslizante_cambia_el_veredicto(app):
+    app.selectbox(key="ejemplo").select("Toxina de afuera: ziconotida (caracol marino)").run()
+    app.button[0].click().run()
+    assert "Alta" in texto_de(app)
+
+    app.slider(key="umbral_una").set_value(99).run()   # ziconotida saca 98: ya no llega
+    assert not app.exception
+    assert "Media" in texto_de(app)
+
+
+def test_el_deslizante_explica_sus_consecuencias(app):
+    app.selectbox(key="ejemplo").select("El caso difícil: ShK (anémona de mar)").run()
+    app.button[0].click().run()
+    assert "falsas alarmas" in texto_de(app)
+
+
+def test_el_caso_shk_dibuja_el_mapa(app):
+    app.selectbox(key="ejemplo").select("El caso difícil: ShK (anémona de mar)").run()
+    app.button[0].click().run()
+    assert not app.exception
+    assert "99/100" in texto_de(app)
+    assert "la posición es orientativa" in " ".join(c.value for c in app.caption)
+
+
+def test_la_ayuda_cuenta_el_caso_del_captopril(app):
+    assert "captopril" in texto_de(app)
+    assert "Bothrops jararaca" in texto_de(app)

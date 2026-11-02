@@ -7,12 +7,14 @@ import json
 from dataclasses import dataclass, field
 from pathlib import Path
 
+import joblib
 import numpy as np
 import pandas as pd
 
 from venomscope import clasificador, novedad, prioridad
 from venomscope.clasificador import Prediccion
 from venomscope.embeddings import MODELO, embeber
+from venomscope.iconos import icono
 from venomscope.novedad import ResultadoNovedad
 from venomscope.prioridad import Prioridad
 from venomscope.validacion import ResultadoValidacion, validar
@@ -29,6 +31,8 @@ class Resultado:
     prioridad: Prioridad | None = None
     vecinos: pd.DataFrame | None = None        # filas del catálogo, con su distancia
     advertencias: list[str] = field(default_factory=list)
+    es_del_nea: bool | None = None
+    punto3d: np.ndarray | None = None          # su lugar en el mapa, para el gráfico
 
 
 class Motor:
@@ -45,6 +49,10 @@ class Motor:
         cfg_nov = self.config["novedad"]
         self.detector = novedad.DetectorNovedad(X_catalogo, np.array(cfg_nov["escala"]),
                                                 cfg_nov["umbrales_puntaje"])
+        # El mapa 3D: se calcula una sola vez en construir_artefactos.py y se guarda,
+        # para que el dibujo sea idéntico en todas las máquinas y en cada apertura.
+        proyeccion = joblib.load(carpeta / "proyeccion3d.joblib")
+        self.pca3d, self.coords3d = proyeccion["pca"], proyeccion["coords"]
 
     def analizar(self, entradas: list[tuple[str, str, bool | None]]) -> list[Resultado]:
         """entradas: lista de (id, secuencia, es_del_nea). es_del_nea puede ser None."""
@@ -57,13 +65,15 @@ class Motor:
         X = embeber([resultados[k].validacion.secuencia for k in validas])
         predicciones = clasificador.predecir(self.modelo, X, self.config["clasificador"]["umbral_confianza"])
         novedades = self.detector.analizar(X, k=self.config["novedad"]["k_vecinos"])
+        puntos3d = self.pca3d.transform(X)   # su lugar en el mapa guardado
 
-        for k, pred, nov in zip(validas, predicciones, novedades):
+        for k, pred, nov, punto in zip(validas, predicciones, novedades, puntos3d):
             r = resultados[k]
-            r.prediccion, r.novedad = pred, nov
+            r.prediccion, r.novedad, r.punto3d = pred, nov, punto
+            r.es_del_nea = nea[k]
             r.prioridad = prioridad.calcular(nov.nivel, nov.puntaje, pred.baja_confianza, nea[k])
             r.vecinos = self.catalogo.iloc[nov.vecinos][
-                ["accession", "nombre_proteina", "especie", "clase", "en_nea", "largo"]
+                ["accession", "nombre_proteina", "especie", "grupo", "clase", "en_nea", "largo"]
             ].assign(
                 distancia=nov.distancias,
                 parecido=[self.detector.parecido(d) for d in nov.distancias],
@@ -78,6 +88,21 @@ class Motor:
 
 
 SIN_ANALIZAR = "No analizada"
+
+
+def reevaluar(resultados: list[Resultado], umbrales: dict) -> None:
+    """Recalcula nivel de novedad y prioridad con otros umbrales, en el lugar.
+
+    El puntaje de novedad NO cambia: es una propiedad de la secuencia. Lo único que
+    cambia es a partir de qué puntaje la llamamos "novedosa". Por eso mover el
+    control en la app es instantáneo: no hay que volver a calcular ningún embedding.
+    """
+    for r in resultados:
+        if r.novedad is None:
+            continue
+        r.novedad.nivel = novedad.nivel_para(r.novedad.puntaje, umbrales)
+        r.prioridad = prioridad.calcular(r.novedad.nivel, r.novedad.puntaje,
+                                         r.prediccion.baja_confianza, r.es_del_nea)
 
 
 def tabla_resultados(resultados: list[Resultado]) -> pd.DataFrame:
@@ -95,7 +120,8 @@ def tabla_resultados(resultados: list[Resultado]) -> pd.DataFrame:
             "Confianza": round(r.prediccion.confianza, 3),
             "Novedad (0-100)": round(r.novedad.puntaje),
             "Nivel de novedad": r.novedad.nivel,
-            "Más parecida a": f"{r.vecinos.loc[0, 'nombre_proteina'].split(' (')[0]} "
+            "Más parecida a": f"{icono(r.vecinos.loc[0, 'grupo'])} "
+                              f"{r.vecinos.loc[0, 'nombre_proteina'].split(' (')[0]} "
                               f"({r.vecinos.loc[0, 'especie']})",
             "Motivo": " ".join(r.prioridad.razones),
             "Avisos": " ".join(r.advertencias),

@@ -16,6 +16,13 @@ EJEMPLOS = {
         "nea": "No",
         "nota": "Hoy es un analgésico aprobado. No se parece a nada del catálogo regional: el sistema la marca como novedosa.",
     },
+    "El caso difícil: ShK (anémona de mar)": {
+        "secuencia": "RSCIDTIPKSRCTAFQCKHSMKYRLSFCRKTCGTC",
+        "nea": "No",
+        "nota": "Novedad 99/100, pero en el mapa cae en el medio del montón. "
+                "Muestra el límite del dibujo: conserva la mitad de la información y la posición "
+                "sola puede engañar. Por eso el puntaje va escrito al lado del punto.",
+    },
     "Secuencia con errores de lectura": {
         "secuencia": "MKTLLXTLVVVTIVCLDLGBTLKC",
         "nea": "No sé",

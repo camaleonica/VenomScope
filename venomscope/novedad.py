@@ -13,11 +13,26 @@ from dataclasses import dataclass
 import numpy as np
 
 # Cortes del puntaje para el nivel que se muestra. Editables en config.json.
-UMBRALES_POR_DEFECTO = {"medio": 75, "alto": 95}
+#
+# El corte alto estaba en 95 y lo bajamos a 90 por decisión del grupo: con 95 el
+# detector encontraba el 71% de las toxinas de familias que nunca vio, y con 90
+# encuentra el 89%, a cambio de pasar de 5% a 10% de falsas alarmas. En este producto
+# los dos errores no cuestan lo mismo (ver la sección 6 del Notebook 2).
+UMBRALES_POR_DEFECTO = {"medio": 75, "alto": 90}
 
 NIVEL_CONOCIDA = "Parecida a algo conocido"
 NIVEL_MEDIA = "Algo distinta"
 NIVEL_NOVEDOSA = "Novedosa"
+
+
+def nivel_para(puntaje: float, umbrales: dict) -> str:
+    """El nivel que corresponde a un puntaje. Separado de la clase para poder
+    recalcularlo cuando el usuario mueve el umbral, sin rehacer los embeddings."""
+    if puntaje >= umbrales["alto"]:
+        return NIVEL_NOVEDOSA
+    if puntaje >= umbrales["medio"]:
+        return NIVEL_MEDIA
+    return NIVEL_CONOCIDA
 
 
 def _a_unitarios(X: np.ndarray) -> np.ndarray:
@@ -62,11 +77,7 @@ class DetectorNovedad:
         self.umbrales = umbrales or UMBRALES_POR_DEFECTO
 
     def nivel(self, p: float) -> str:
-        if p >= self.umbrales["alto"]:
-            return NIVEL_NOVEDOSA
-        if p >= self.umbrales["medio"]:
-            return NIVEL_MEDIA
-        return NIVEL_CONOCIDA
+        return nivel_para(p, self.umbrales)
 
     def parecido(self, distancia: float) -> float:
         """La misma escala que la novedad, dada vuelta: 100 = idéntica, 0 = nada que ver."""

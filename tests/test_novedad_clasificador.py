@@ -52,3 +52,17 @@ def test_clasificador_predice_y_marca_confianza(tmp_path):
 
     dudosa = clasificador.predecir(modelo, ((CENTRO_A + CENTRO_B) / 2)[None, :], umbral=0.99)[0]
     assert dudosa.baja_confianza
+
+
+def test_nivel_para_respeta_los_umbrales():
+    u = {"medio": 75, "alto": 90}
+    assert novedad.nivel_para(95, u) == novedad.NIVEL_NOVEDOSA
+    assert novedad.nivel_para(90, u) == novedad.NIVEL_NOVEDOSA    # el borde entra
+    assert novedad.nivel_para(89, u) == novedad.NIVEL_MEDIA
+    assert novedad.nivel_para(74, u) == novedad.NIVEL_CONOCIDA
+
+
+def test_bajar_el_umbral_marca_mas_cosas_como_novedosas():
+    p = 92
+    assert novedad.nivel_para(p, {"medio": 75, "alto": 90}) == novedad.NIVEL_NOVEDOSA
+    assert novedad.nivel_para(p, {"medio": 75, "alto": 95}) == novedad.NIVEL_MEDIA

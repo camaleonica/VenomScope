@@ -1,10 +1,11 @@
 {
   "version": "0.1-provisorio",
   "generado_por": "scripts/construir_artefactos.py",
-  "fecha": "2026-10-27",
+  "fecha": "2026-11-02",
   "modelo_esm": "facebook/esm2_t12_35M_UR50D",
   "dim": 480,
   "n_catalogo": 584,
+  "n_reservadas": 66,
   "clasificador": {
     "umbral_confianza": 0.5
   },
@@ -12,7 +13,7 @@
     "k_vecinos": 5,
     "umbrales_puntaje": {
       "medio": 75,
-      "alto": 95
+      "alto": 90
     },
     "escala": [
       9.000000318337698e-06,
@@ -533,14 +534,39 @@
       0.05936000123620033,
       0.06975600123405457,
       0.07641799747943878
-    ]
+    ],
+    "curva_umbrales": {
+      "80": 0.9697,
+      "81": 0.9697,
+      "82": 0.9697,
+      "83": 0.9697,
+      "84": 0.9394,
+      "85": 0.9394,
+      "86": 0.9394,
+      "87": 0.9394,
+      "88": 0.9394,
+      "89": 0.8939,
+      "90": 0.8939,
+      "91": 0.8636,
+      "92": 0.8182,
+      "93": 0.7879,
+      "94": 0.7576,
+      "95": 0.7121,
+      "96": 0.697,
+      "97": 0.6667,
+      "98": 0.4394,
+      "99": 0.2879
+    }
+  },
+  "mapa3d": {
+    "varianza_conservada": 0.5452
   },
   "metricas": {
     "macro_f1_mayoritaria": 0.0103,
     "macro_f1_composicion": 0.8077,
     "macro_f1_esm2": 0.9312,
     "novedad_auc": 0.9585,
-    "reservadas_nivel_alto": 0.7121,
+    "reservadas_nivel_alto": 0.8939,
     "reservadas_nivel_medio_o_alto": 0.9848
   }
 }

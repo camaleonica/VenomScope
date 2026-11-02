@@ -1,8 +1,10 @@
 """Test de punta a punta con los artefactos reales (generados por scripts/construir_artefactos.py)."""
+import numpy as np
 import pytest
 
-from venomscope.analisis import ARTIFACTS, SIN_ANALIZAR, Motor, tabla_resultados
-from venomscope.prioridad import ALTA, BAJA
+from venomscope.analisis import ARTIFACTS, SIN_ANALIZAR, Motor, reevaluar, tabla_resultados
+from venomscope.novedad import NIVEL_MEDIA, NIVEL_NOVEDOSA
+from venomscope.prioridad import ALTA, BAJA, MEDIA
 
 if not (ARTIFACTS / "embeddings.npy").exists():
     pytest.skip("Faltan artefactos: correr scripts/construir_artefactos.py", allow_module_level=True)
@@ -46,3 +48,30 @@ def test_parecido_es_100_para_una_identica(motor):
     fila = motor.catalogo.iloc[3]
     r = motor.analizar([("x", fila["sequence"], None)])[0]
     assert r.vecinos.loc[0, "parecido"] == 100
+
+
+def test_reevaluar_cambia_el_veredicto_sin_tocar_el_puntaje(motor):
+    ziconotida = "CKGKGAKCSRLMYDCCTGSCRSGKC"
+    r = motor.analizar([("x", ziconotida, None)])[0]
+    puntaje = r.novedad.puntaje
+    assert r.novedad.nivel == NIVEL_NOVEDOSA and r.prioridad.nivel == ALTA
+
+    reevaluar([r], {"medio": 75, "alto": 99})
+    assert r.novedad.puntaje == puntaje          # el puntaje es de la secuencia, no cambia
+    assert r.novedad.nivel == NIVEL_MEDIA        # lo que cambia es a partir de cuándo se llama novedosa
+    assert r.prioridad.nivel == MEDIA
+
+    reevaluar([r], {"medio": 75, "alto": 90})
+    assert r.prioridad.nivel == ALTA             # y vuelve
+
+
+def test_reevaluar_no_rompe_con_invalidas(motor):
+    resultados = motor.analizar([("mala", "MKTX", None)])
+    reevaluar(resultados, {"medio": 75, "alto": 90})
+    assert resultados[0].prioridad is None
+
+
+def test_el_punto_del_catalogo_cae_donde_dice_el_mapa(motor):
+    fila = motor.catalogo.iloc[7]
+    r = motor.analizar([("x", fila["sequence"], None)])[0]
+    assert np.allclose(r.punto3d, motor.coords3d[7], atol=1e-4)

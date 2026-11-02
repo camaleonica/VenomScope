@@ -12,8 +12,10 @@ import time
 from datetime import date
 from pathlib import Path
 
+import joblib
 import numpy as np
 import pandas as pd
+from sklearn.decomposition import PCA
 from sklearn.dummy import DummyClassifier
 from sklearn.metrics import f1_score, roc_auc_score
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
@@ -85,7 +87,23 @@ def main():
     print(f"  reservadas al menos 'Algo distinta' (>= {umbrales['medio']}): {metricas['reservadas_nivel_medio_o_alto']:.0%}")
     print(f"  (por construcción, ~{100 - umbrales['alto']}% de las conocidas también superan {umbrales['alto']})")
 
-    # 4. Configuración que lee la app
+    # 4. El mapa 3D, calculado UNA sola vez y guardado.
+    #    Si la app lo recalculara en cada apertura, el dibujo podría salir espejado
+    #    (el signo de cada eje de PCA es arbitrario). Guardándolo, el mapa es siempre
+    #    el mismo en todas las máquinas.
+    pca3d = PCA(n_components=3, random_state=0).fit(X)
+    coords3d = pca3d.transform(X)
+    joblib.dump({"pca": pca3d, "coords": coords3d}, ARTIFACTS / "proyeccion3d.joblib")
+    conservado = pca3d.explained_variance_ratio_.sum()
+    print(f"\nMapa 3D: conserva el {conservado:.1%} de la información de los {DIM} números.")
+    print("  (por eso el mapa es orientativo; el veredicto sale del cálculo completo)")
+
+    # 5. Configuración que lee la app
+    # Qué pasa con cada valor posible del control deslizante de la app: cuántas
+    # novedades detecta. Las falsas alarmas son 100 - umbral, por cómo está armada
+    # la escala. Lo guardamos para que la app lo muestre sin recalcular nada.
+    curva = {str(u): round(float((p_reservadas >= u).mean()), 4) for u in range(80, 100)}
+
     config = {
         "version": VERSION,
         "generado_por": "scripts/construir_artefactos.py",
@@ -93,12 +111,15 @@ def main():
         "modelo_esm": MODELO,
         "dim": DIM,
         "n_catalogo": len(cat),
+        "n_reservadas": int((~modelable).sum()),
         "clasificador": {"umbral_confianza": clasificador.UMBRAL_CONFIANZA_POR_DEFECTO},
         "novedad": {
             "k_vecinos": 5,
             "umbrales_puntaje": umbrales,
             "escala": escala.round(6).tolist(),
+            "curva_umbrales": curva,
         },
+        "mapa3d": {"varianza_conservada": round(float(conservado), 4)},
         "metricas": {k: round(float(v), 4) for k, v in metricas.items()},
     }
     (ARTIFACTS / "config.json").write_text(json.dumps(config, indent=2, ensure_ascii=False))
