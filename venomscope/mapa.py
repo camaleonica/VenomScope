@@ -27,18 +27,32 @@ import plotly.graph_objects as go
 
 from venomscope.iconos import con_icono
 
-# Paleta validada (ver dataviz/references/palette.md). Tres colores: más no pasa
-# la verificación de daltonismo en un gráfico de dispersión.
-AZUL = "#2a78d6"      # la familia que predijo el clasificador
-NARANJA = "#eb6834"   # la secuencia del usuario
-AQUA = "#1baf7a"      # sus vecinos más parecidos
+# Paleta validada contra el fondo oscuro (ver dataviz/references/palette.md).
+# Son los pasos "dark" de la misma paleta, no los claros bajados de brillo: el modo
+# oscuro se verifica aparte. Tres colores, porque más no pasa la verificación de
+# daltonismo en un gráfico de dispersión.
+AZUL = "#3987e5"      # la familia que predijo el clasificador
+NARANJA = "#d95926"   # la secuencia del usuario
+AQUA = "#199e70"      # sus vecinos más parecidos
 
-GRIS_PUNTOS = "#c3c2b7"
-TINTA_MUTED = "#898781"
-TINTA_PRIMARIA = "#0b0b0b"
-SUPERFICIE = "#fcfcfb"
+# El color saturado se reserva para lo que cambia en cada consulta. El catálogo,
+# que es el telón de fondo, va apagado para no competir.
+GRIS_PUNTOS = "#52525b"
+SUPERFICIE = "#09090b"
+GRILLA = "#27272a"
+EJES = "#3f3f46"
+TINTA = "#a1a1aa"
+TINTA_CLARA = "#e4e4e7"
+FONDO_TOOLTIP = "#18181b"
+
+# Monoespaciada para números y etiquetas. La lista es una cadena de respaldo: si
+# JetBrains Mono no está instalada, el navegador baja a la siguiente.
+MONO = "JetBrains Mono, SFMono-Regular, Menlo, Consolas, monospace"
 
 N_FAMILIAS_ETIQUETADAS = 6
+
+# Ángulo inicial fijo: el mapa se ve siempre igual al abrir la app.
+CAMARA_INICIAL = dict(eye=dict(x=1.15, y=1.15, z=0.75))
 
 
 def _hover(cat) -> list[str]:
@@ -59,7 +73,7 @@ def figura_3d(motor, resultado=None, altura: int = 620) -> go.Figure:
     fig.add_trace(go.Scatter3d(
         x=coords[:, 0], y=coords[:, 1], z=coords[:, 2],
         mode="markers", name=f"Catálogo ({len(cat)} toxinas)",
-        marker=dict(size=2.5, color=GRIS_PUNTOS, opacity=0.55),
+        marker=dict(size=2.8, color=GRIS_PUNTOS, opacity=0.7),
         hovertemplate=_hover(cat), hoverlabel=dict(align="left"),
     ))
 
@@ -115,8 +129,8 @@ def figura_3d(motor, resultado=None, altura: int = 620) -> go.Figure:
         x=p[0], y=p[1], z=p[2],
         text=f"<b>novedad {resultado.novedad.puntaje:.0f}/100</b><br>{resultado.novedad.nivel}",
         showarrow=True, arrowhead=0, arrowwidth=1.5, arrowcolor=NARANJA,
-        ax=70, ay=-55, font=dict(size=12, color=TINTA_PRIMARIA),
-        bgcolor="rgba(252,252,251,0.92)", bordercolor=NARANJA, borderwidth=1, borderpad=4,
+        ax=70, ay=-55, font=dict(size=11, color=TINTA_CLARA, family=MONO),
+        bgcolor="rgba(24,24,27,0.92)", bordercolor=NARANJA, borderwidth=1, borderpad=5,
     ))
     return fig
 
@@ -141,7 +155,7 @@ def _etiquetas_de_familia(fig: go.Figure, cat, coords) -> None:
     fig.add_trace(go.Scatter3d(
         x=centros[:, 0], y=centros[:, 1], z=centros[:, 2],
         mode="text", showlegend=False, text=nombres,
-        textfont=dict(size=10, color=TINTA_MUTED), hoverinfo="skip",
+        textfont=dict(size=10, color=TINTA, family=MONO), hoverinfo="skip",
     ))
 
 
@@ -154,19 +168,27 @@ def _ejes(fig: go.Figure, altura: int, puntos, anotacion: dict | None = None) ->
     bajo, alto = puntos.min(axis=0), puntos.max(axis=0)
     margen = (alto - bajo) * 0.05
     eje = dict(showticklabels=False, title="", showbackground=True,
-               backgroundcolor=SUPERFICIE, gridcolor="#e1e0d9", zeroline=False)
+               backgroundcolor=SUPERFICIE, gridcolor=GRILLA, zerolinecolor=EJES,
+               linecolor=EJES, zeroline=False)
     fig.update_layout(
         height=altura, margin=dict(l=24, r=24, t=0, b=0),
         paper_bgcolor=SUPERFICIE, plot_bgcolor=SUPERFICIE,
+        font=dict(family=MONO, size=10, color=TINTA),
         scene=dict(
             xaxis={**eje, "range": [bajo[0] - margen[0], alto[0] + margen[0]]},
             yaxis={**eje, "range": [bajo[1] - margen[1], alto[1] + margen[1]]},
             zaxis={**eje, "range": [bajo[2] - margen[2], alto[2] + margen[2]]},
             aspectmode="data",
-            camera=dict(eye=dict(x=1.15, y=1.15, z=0.75)),
+            camera=CAMARA_INICIAL,
             annotations=[anotacion] if anotacion else [],
         ),
         legend=dict(orientation="h", yanchor="top", y=1.0, x=0,
-                    bgcolor="rgba(252,252,251,0.85)", font=dict(size=11)),
+                    bgcolor="rgba(9,9,11,0.85)", bordercolor=EJES, borderwidth=1,
+                    font=dict(size=10, color=TINTA, family=MONO)),
+        hoverlabel=dict(bgcolor=FONDO_TOOLTIP, bordercolor=EJES,
+                        font=dict(family=MONO, size=11, color=TINTA_CLARA)),
         hovermode="closest",
+        # Si el usuario giró el mapa y después mueve el deslizante del umbral, la
+        # vista se mantiene. Plotly solo resetea la cámara cuando este valor cambia.
+        uirevision="mapa-venomscope",
     )

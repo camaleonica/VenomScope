@@ -56,3 +56,19 @@ def test_el_mapa_es_identico_entre_ejecuciones(motor):
     a, b = figura_3d(motor), figura_3d(Motor())
     assert (a.data[0].x == b.data[0].x).all()
     assert (a.data[0].z == b.data[0].z).all()
+
+
+def test_la_estetica_oscura_esta_aplicada(motor):
+    fig = figura_3d(motor)
+    assert fig.layout.paper_bgcolor == "#09090b"
+    assert fig.layout.scene.xaxis.gridcolor == "#27272a"
+    assert fig.layout.hoverlabel.bgcolor == "#18181b"
+    assert "Mono" in fig.layout.font.family
+
+
+def test_la_vista_no_se_resetea_al_mover_el_umbral(motor):
+    """uirevision fijo: Plotly solo recoloca la cámara si ese valor cambia."""
+    r = motor.analizar([("ShK", SHK, None)])[0]
+    a, b = figura_3d(motor), figura_3d(motor, r)
+    assert a.layout.uirevision == b.layout.uirevision
+    assert a.layout.scene.camera.eye == b.layout.scene.camera.eye

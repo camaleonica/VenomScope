@@ -58,7 +58,7 @@ def control_umbral(motor: Motor, clave: str) -> dict:
 
 
 # ------------------------------------------------------------- detalle ----
-def mostrar_detalle(r, motor: Motor = None, mapa: bool = True):
+def mostrar_detalle(r, motor: Motor = None, mapa: bool = True, clave: str = "mapa"):
     if not r.validacion.es_valida:
         st.error("**No se pudo analizar esta secuencia.**\n\n" + "\n\n".join(r.validacion.errores))
         return
@@ -122,7 +122,9 @@ def mostrar_detalle(r, motor: Motor = None, mapa: bool = True):
 
     if mapa and r.punto3d is not None:
         st.markdown("**Dónde cae en el mapa del catálogo**")
-        st.plotly_chart(figura_3d(motor, r), width="stretch",
+        # key fija + uirevision en la figura: si el usuario giró el mapa y después
+        # mueve el deslizante del umbral, la vista no se le resetea.
+        st.plotly_chart(figura_3d(motor, r), width="stretch", key=clave,
                         config={"displayModeBar": False})
         st.caption(
             f"Se puede girar con el mouse y acercar con la rueda. Cada punto es una toxina del "
@@ -197,7 +199,7 @@ def pestana_una(motor: Motor):
         if resultado.validacion.es_valida:
             reevaluar([resultado], control_umbral(motor, "umbral_una"))
             st.divider()
-        mostrar_detalle(resultado, motor)
+        mostrar_detalle(resultado, motor, clave="mapa_una")
 
 
 def pestana_campana(motor: Motor):
@@ -266,7 +268,7 @@ def pestana_campana(motor: Motor):
     st.markdown("#### Ver el detalle de una muestra")
     por_id = {r.id: r for r in resultados}
     elegida = st.selectbox("Muestra", tabla["Muestra"], label_visibility="collapsed")
-    mostrar_detalle(por_id[elegida], motor)
+    mostrar_detalle(por_id[elegida], motor, clave="mapa_campana")
 
 
 def pestana_ayuda(motor: Motor):
