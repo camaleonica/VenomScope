@@ -64,6 +64,47 @@ class Motor:
             r.prioridad = prioridad.calcular(nov.nivel, nov.puntaje, pred.baja_confianza, nea[k])
             r.vecinos = self.catalogo.iloc[nov.vecinos][
                 ["accession", "nombre_proteina", "especie", "clase", "en_nea", "largo"]
-            ].assign(distancia=nov.distancias).reset_index(drop=True)
+            ].assign(
+                distancia=nov.distancias,
+                parecido=[self.detector.parecido(d) for d in nov.distancias],
+            ).reset_index(drop=True)
             r.advertencias = list(r.validacion.advertencias)
+            if pred.baja_confianza:
+                r.advertencias.append(
+                    f"El sistema no está seguro de la familia ({pred.confianza:.0%} de confianza). "
+                    "Otras posibles: " + ", ".join(f"{f} ({p:.0%})" for f, p in pred.alternativas) + "."
+                )
         return resultados
+
+
+SIN_ANALIZAR = "No analizada"
+
+
+def tabla_resultados(resultados: list[Resultado]) -> pd.DataFrame:
+    """Una fila por muestra, ordenada por prioridad (Alta primero) y después por novedad."""
+    filas = []
+    for r in resultados:
+        if not r.validacion.es_valida:
+            filas.append({"Muestra": r.id, "Prioridad": SIN_ANALIZAR,
+                          "Avisos": " ".join(r.validacion.errores)})
+            continue
+        filas.append({
+            "Muestra": r.id,
+            "Prioridad": r.prioridad.nivel,
+            "Familia probable": r.prediccion.familia,
+            "Confianza": round(r.prediccion.confianza, 3),
+            "Novedad (0-100)": round(r.novedad.puntaje),
+            "Nivel de novedad": r.novedad.nivel,
+            "Más parecida a": f"{r.vecinos.loc[0, 'nombre_proteina'].split(' (')[0]} "
+                              f"({r.vecinos.loc[0, 'especie']})",
+            "Motivo": " ".join(r.prioridad.razones),
+            "Avisos": " ".join(r.advertencias),
+            "Largo": len(r.validacion.secuencia),
+        })
+    columnas = ["Muestra", "Prioridad", "Familia probable", "Confianza", "Novedad (0-100)",
+                "Nivel de novedad", "Más parecida a", "Motivo", "Avisos", "Largo"]
+    tabla = pd.DataFrame(filas).reindex(columns=columnas)
+    orden = {**prioridad.ORDEN, SIN_ANALIZAR: len(prioridad.ORDEN)}
+    return (tabla.assign(_orden=tabla["Prioridad"].map(orden))
+                 .sort_values(["_orden", "Novedad (0-100)"], ascending=[True, False])
+                 .drop(columns="_orden").reset_index(drop=True))

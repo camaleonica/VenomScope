@@ -68,6 +68,10 @@ class DetectorNovedad:
             return NIVEL_MEDIA
         return NIVEL_CONOCIDA
 
+    def parecido(self, distancia: float) -> float:
+        """La misma escala que la novedad, dada vuelta: 100 = idéntica, 0 = nada que ver."""
+        return 100.0 - puntaje(distancia, self.escala)
+
     def analizar(self, X: np.ndarray, k: int = 5) -> list[ResultadoNovedad]:
         D = distancias_coseno(X, self.X_catalogo)
         resultados = []

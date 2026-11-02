@@ -1,8 +1,8 @@
 """Test de punta a punta con los artefactos reales (generados por scripts/construir_artefactos.py)."""
 import pytest
 
-from venomscope.analisis import ARTIFACTS, Motor
-from venomscope.prioridad import BAJA
+from venomscope.analisis import ARTIFACTS, SIN_ANALIZAR, Motor, tabla_resultados
+from venomscope.prioridad import ALTA, BAJA
 
 if not (ARTIFACTS / "embeddings.npy").exists():
     pytest.skip("Faltan artefactos: correr scripts/construir_artefactos.py", allow_module_level=True)
@@ -29,3 +29,20 @@ def test_invalidas_no_rompen_el_lote(motor):
     assert resultados[0].prediccion is None
     assert resultados[1].prioridad is not None
     assert resultados[1].advertencias   # péptido corto
+
+
+def test_tabla_ordena_por_prioridad_y_deja_invalidas_al_final(motor):
+    conocida = motor.catalogo["sequence"].iloc[0]
+    ziconotida = "CKGKGAKCSRLMYDCCTGSCRSGKC"   # toxina de caracol marino, fuera del catálogo
+    resultados = motor.analizar([("mala", "MKTX", None), ("conocida", conocida, None),
+                                 ("novedosa", ziconotida, None)])
+    tabla = tabla_resultados(resultados)
+    assert list(tabla["Muestra"]) == ["novedosa", "conocida", "mala"]
+    assert list(tabla["Prioridad"]) == [ALTA, BAJA, SIN_ANALIZAR]
+    assert tabla.loc[1, "Novedad (0-100)"] == 0
+
+
+def test_parecido_es_100_para_una_identica(motor):
+    fila = motor.catalogo.iloc[3]
+    r = motor.analizar([("x", fila["sequence"], None)])[0]
+    assert r.vecinos.loc[0, "parecido"] == 100
