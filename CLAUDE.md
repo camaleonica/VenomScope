@@ -29,7 +29,7 @@ Columnas conocidas de `catalogo_nea.csv`: `accession, nombre_proteina, especie, 
 **Notebook 2 — modelo (en curso):** genera embeddings con ESM-2.
 - Modelo: `facebook/esm2_t12_35M_UR50D` (Hugging Face, ~150 MB, corre en CPU), dimensión 480.
 - Un vector por secuencia = **promedio de los vectores por aminoácido, excluyendo tokens especiales y de relleno** (máscara con `attention_mask` y `tokenizer.all_special_ids`). `torch.no_grad()`, `model.eval()`.
-- Secciones 2 a 7 escritas (espacio de embeddings, líneas de base, clasificador, análisis de errores, detector de novedad, exportar). Corrido de punta a punta fuera de Colab el 2026-11-03: da los mismos artefactos y métricas que `scripts/construir_artefactos.py`. Falta correrlo en Colab para que queden guardadas las salidas y los gráficos.
+- Secciones 2 a 7 escritas (espacio de embeddings, líneas de base, clasificador, análisis de errores, detector de novedad, exportar). Corrido de punta a punta fuera de Colab el 2026-11-03: da los mismos artefactos y métricas que `scripts/construir_artefactos.py`. La primera celda instala scikit-learn y joblib en las versiones de `requirements.txt`: con la 1.6.1 que trae Colab el examen agrupado (4.5) daba 58 en vez de 66 y el `.joblib` no era compatible con la app.
 
 ## Regla crítica
 La app **debe calcular embeddings exactamente igual que el notebook** (mismo modelo, mismo pooling con máscara, misma normalización de la secuencia: mayúsculas y sin espacios). Si difieren, el clasificador y el detector de novedad dan cualquier cosa sin dar error. Esta lógica va en un único módulo y tiene un test.
