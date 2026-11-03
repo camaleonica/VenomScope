@@ -132,13 +132,17 @@ def barra_lateral(motor: Motor):
         if m:
             with st.expander("Qué tan bien anda"):
                 st.markdown(
-                    f"- Identifica la familia con un puntaje de "
-                    f"**{m['macro_f1_esm2'] * 100:.0f} sobre 100**. Sin IA, el mismo método "
-                    f"llega a {m['macro_f1_composicion'] * 100:.0f}.\n"
-                    f"- De las toxinas de familias que nunca vio, avisa por el "
-                    f"**{m['reservadas_nivel_medio_o_alto']:.0%}**.\n"
-                    "- Los dos números están medidos con exámenes que el modelo no vio. "
-                    "El detalle está en el Notebook 2."
+                    "**Identificar la familia**, en puntos sobre 100:\n\n"
+                    f"| | con IA | sin IA |\n|---|---|---|\n"
+                    f"| examen normal | **{m['macro_f1_esm2'] * 100:.0f}** | "
+                    f"{m['macro_f1_composicion'] * 100:.0f} |\n"
+                    f"| examen difícil | **{m['macro_f1_esm2_agrupado'] * 100:.0f}** | "
+                    f"{m['macro_f1_composicion_agrupado'] * 100:.0f} |\n\n"
+                    "El examen difícil separa las secuencias casi idénticas, así que el "
+                    "sistema no puede aprobar de memoria. Es el número realista, y ahí la "
+                    "ventaja de la IA se agranda.\n\n"
+                    f"**Avisar de lo desconocido:** de las toxinas de familias que nunca vio, "
+                    f"marca el **{m['reservadas_nivel_medio_o_alto']:.0%}**."
                 )
         st.caption("Anda sin internet. Es una ayuda para priorizar: la decisión es del laboratorio.")
 
@@ -151,6 +155,10 @@ def cargar_ejemplo():
 
 
 def pestana_una(motor: Motor):
+    # El valor inicial se fija acá y no con index= en el radio: al elegir un ejemplo
+    # lo pisamos desde session_state, y Streamlit se queja si se hacen las dos cosas.
+    st.session_state.setdefault("nea_una", "No sé")
+
     c1, c2 = st.columns([3, 1])
     with c1:
         texto = st.text_area("Secuencia", height=150, key="secuencia",
@@ -158,7 +166,7 @@ def pestana_una(motor: Motor):
     with c2:
         st.selectbox("O probá con un ejemplo", list(EJEMPLOS), index=None, key="ejemplo",
                      placeholder="Elegí uno", on_change=cargar_ejemplo)
-        st.radio("¿Es de una especie del NEA?", list(OPCIONES_NEA), index=2,
+        st.radio("¿Es de una especie del NEA?", list(OPCIONES_NEA),
                  key="nea_una", horizontal=True)
     if st.session_state.get("ejemplo"):
         st.caption(EJEMPLOS[st.session_state["ejemplo"]]["nota"])

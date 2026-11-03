@@ -11,7 +11,7 @@ import joblib
 import numpy as np
 import pandas as pd
 
-from venomscope import clasificador, novedad, prioridad
+from venomscope import clasificador, contrato, novedad, prioridad
 from venomscope.clasificador import Prediccion
 from venomscope.embeddings import MODELO, embeber
 from venomscope.grupos import nombre as nombre_grupo
@@ -37,6 +37,7 @@ class Resultado:
 
 class Motor:
     def __init__(self, carpeta: Path = ARTIFACTS):
+        contrato.verificar(carpeta)
         self.config = json.loads((carpeta / "config.json").read_text())
         if self.config["modelo_esm"] != MODELO:
             raise ValueError(f"Los artefactos se hicieron con {self.config['modelo_esm']}, "

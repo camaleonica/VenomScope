@@ -1,7 +1,7 @@
 {
-  "version": "0.1-provisorio",
+  "version": "1.0",
   "generado_por": "scripts/construir_artefactos.py",
-  "fecha": "2026-11-02",
+  "fecha": "2026-11-03",
   "modelo_esm": "facebook/esm2_t12_35M_UR50D",
   "dim": 480,
   "n_catalogo": 584,
@@ -565,6 +565,8 @@
     "macro_f1_mayoritaria": 0.0103,
     "macro_f1_composicion": 0.8077,
     "macro_f1_esm2": 0.9312,
+    "macro_f1_composicion_agrupado": 0.4818,
+    "macro_f1_esm2_agrupado": 0.661,
     "novedad_auc": 0.9585,
     "reservadas_nivel_alto": 0.8939,
     "reservadas_nivel_medio_o_alto": 0.9848

@@ -34,14 +34,21 @@ Columnas conocidas de `catalogo_nea.csv`: `accession, nombre_proteina, especie, 
 ## Regla crítica
 La app **debe calcular embeddings exactamente igual que el notebook** (mismo modelo, mismo pooling con máscara, misma normalización de la secuencia: mayúsculas y sin espacios). Si difieren, el clasificador y el detector de novedad dan cualquier cosa sin dar error. Esta lógica va en un único módulo y tiene un test.
 
-## Contrato de archivos entre notebook y app (a confirmar con el grupo)
-El notebook exporta a `artifacts/`:
+## Contrato de archivos entre notebook y app (cerrado)
+Son cinco archivos en `artifacts/`, y los generan por igual la sección 7 del Notebook 2 o `scripts/construir_artefactos.py`:
 - `catalogo_nea.csv` — el catálogo
 - `embeddings.npy` — matriz (n_secuencias × 480), mismo orden que el CSV
-- `clasificador.joblib` — modelo de scikit-learn entrenado sobre embeddings
-- `config.json` — nombre del modelo ESM, umbrales del detector de novedad, versión
+- `clasificador.joblib` — regresión logística entrenada sobre los embeddings
+- `proyeccion3d.joblib` — el mapa 3D precalculado (PCA guardada + coordenadas)
+- `config.json` — modelo ESM, umbrales, escala de novedad, curva de sensibilidad y métricas
 
-Mientras esos archivos no existan, la app debe poder generarlos por su cuenta a partir de `catalogo_nea.csv` con un script (`scripts/construir_artefactos.py`) usando un clasificador simple (k-NN o regresión logística), para no bloquear el desarrollo.
+**La lista vive en `venomscope/contrato.py`.** Si se agrega algo que la app lea de `config.json`, va ahí: el `Motor` verifica la carpeta al arrancar y un test lo comprueba. Cualquier cambio en ese contrato hay que hacerlo en los dos lados a la vez.
+
+## Decisiones ya tomadas
+- **Umbrales de novedad**: 75 (algo distinta) y 90 (novedosa). El 90 salió de bajar el 95 original: detecta 89% de las familias nunca vistas en vez de 71%, a cambio de 10% de falsas alarmas en vez de 5%. El usuario lo mueve desde la app entre 80 y 99.
+- **Reglas de prioridad**: están en `venomscope/prioridad.py`, en la sección REGLAS, y son explícitas a propósito.
+- **Qué número reportar**: los dos. 93 sobre 100 en el examen estándar y 66 en el examen que agrupa las secuencias casi idénticas, que es el realista.
+- **Sin emojis en la interfaz** (hay un test que lo verifica) y tema oscuro en `.streamlit/config.toml`.
 
 ## Lo que hace la app (Streamlit)
 Entrada: una secuencia pegada o un archivo FASTA/CSV con varias.

@@ -1,10 +1,12 @@
 """Reglas de prioridad de investigación: alta, media o baja, siempre con sus razones.
 
 Son reglas explícitas (no ML) a propósito: un laboratorio tiene que poder ver
-por qué el sistema le recomienda algo y discutirlo.
+por qué el sistema le recomienda algo y discutirlo. Un modelo que escupiera
+"prioridad alta" sin explicación no se podría defender frente a nadie.
 
-PROVISORIO: las reglas definitivas las decide el grupo. Todo lo editable está
-en este archivo, en la sección REGLAS.
+Las reglas están todas abajo, en la sección REGLAS, y se cambian ahí sin tocar
+nada más. El corte entre "novedosa" y "algo distinta" no vive acá: se configura
+en config.json y el usuario lo mueve desde la app.
 """
 from dataclasses import dataclass, field
 

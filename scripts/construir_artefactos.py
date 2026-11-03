@@ -15,18 +15,23 @@ from pathlib import Path
 import joblib
 import numpy as np
 import pandas as pd
+from sklearn.cluster import AgglomerativeClustering
 from sklearn.decomposition import PCA
 from sklearn.dummy import DummyClassifier
 from sklearn.metrics import f1_score, roc_auc_score
-from sklearn.model_selection import StratifiedKFold, cross_val_predict
+from sklearn.model_selection import StratifiedGroupKFold, StratifiedKFold, cross_val_predict
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from venomscope import clasificador, novedad  # noqa: E402
+from venomscope import clasificador, contrato, novedad  # noqa: E402
 from venomscope.embeddings import DIM, MODELO, embeber  # noqa: E402
 from venomscope.validacion import AMINOACIDOS_VALIDOS  # noqa: E402
 
 ARTIFACTS = Path(__file__).resolve().parents[1] / "artifacts"
-VERSION = "0.1-provisorio"
+VERSION = "1.0"
+
+# Dos secuencias a menos de esta distancia son casi la misma molécula. Se usa para
+# la medición honesta: ver la sección 4.5 del Notebook 2.
+UMBRAL_GEMELAS = 0.02
 
 
 def composicion(secuencias) -> np.ndarray:
@@ -65,6 +70,26 @@ def main():
     print(f"  siempre la familia más común : {metricas['macro_f1_mayoritaria']:.3f}")
     print(f"  composición de aminoácidos   : {metricas['macro_f1_composicion']:.3f}")
     print(f"  embeddings ESM-2             : {metricas['macro_f1_esm2']:.3f}")
+
+    # Medición honesta: el catálogo tiene muchas secuencias casi idénticas y al
+    # repartirlas al azar una variante queda entrenando y su casi gemela en el
+    # examen. Agrupándolas y repartiendo por grupo entero, el número baja bastante.
+    grupos = AgglomerativeClustering(n_clusters=None, distance_threshold=UMBRAL_GEMELAS,
+                                     metric="cosine", linkage="average").fit_predict(Xm)
+    cv_grupos = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42)
+
+    def macro_f1_agrupado(datos):
+        pred = cross_val_predict(clasificador.nuevo_modelo(), datos, ym,
+                                 cv=cv_grupos, groups=grupos)
+        return f1_score(ym, pred, average="macro")
+
+    metricas["macro_f1_composicion_agrupado"] = macro_f1_agrupado(
+        composicion(cat.loc[modelable, "sequence"]))
+    metricas["macro_f1_esm2_agrupado"] = macro_f1_agrupado(Xm)
+    print(f"\n  Agrupando las {len(Xm)} secuencias en {len(set(grupos))} grupos de casi gemelas:")
+    print(f"  composición de aminoácidos   : {metricas['macro_f1_composicion_agrupado']:.3f}")
+    print(f"  embeddings ESM-2             : {metricas['macro_f1_esm2_agrupado']:.3f}")
+    print("  (es el examen difícil y el número realista; la ventaja de ESM-2 se agranda)")
 
     modelo = clasificador.entrenar(Xm, ym)
     clasificador.guardar(modelo, ARTIFACTS / "clasificador.joblib")
@@ -123,7 +148,10 @@ def main():
         "metricas": {k: round(float(v), 4) for k, v in metricas.items()},
     }
     (ARTIFACTS / "config.json").write_text(json.dumps(config, indent=2, ensure_ascii=False))
-    print(f"\nGuardado en {ARTIFACTS}: embeddings.npy, clasificador.joblib, config.json")
+    contrato.verificar(ARTIFACTS)
+    print(f"\nGuardado en {ARTIFACTS}:")
+    for nombre in contrato.ARCHIVOS:
+        print(f"  {nombre:22s} {(ARTIFACTS / nombre).stat().st_size / 1024:8.1f} KB")
 
 
 if __name__ == "__main__":
