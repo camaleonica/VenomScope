@@ -33,6 +33,7 @@ El paso 2 descarga el modelo la primera vez y después genera los cinco archivos
 
 Se abre en `http://localhost:8501`. **Funciona sin internet.**
 
+- **Qué es esto**: la introducción para quien no sabe biología: el problema, la biología mínima, cómo funciona y qué tan bien anda.
 - **Una secuencia**: pegar una secuencia o elegir un ejemplo.
 - **Una campaña entera**: subir un FASTA o CSV (o usar la campaña de prueba) y descargar los resultados ordenados por prioridad.
 - **Cómo leer esto**: qué significa cada número y qué no puede hacer el sistema.

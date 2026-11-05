@@ -67,14 +67,21 @@ def mostrar_resultado(r, motor: Motor, clave: str = "mapa"):
         return
 
     c1, c2, c3 = st.columns(3)
-    c1.markdown("Prioridad")
+    c1.markdown("Prioridad", help="Qué tan urgente es estudiarla en el laboratorio. Sale de "
+                                  "reglas fijas, no de la IA: abajo dice por qué.")
     c1.markdown(f"# :{COLOR_PRIORIDAD[r.prioridad.nivel]}[{r.prioridad.nivel}]")
-    c2.metric("Novedad", f"{r.novedad.puntaje:.0f}/100", r.novedad.nivel, delta_color="off")
+    c2.metric("Novedad", f"{r.novedad.puntaje:.0f}/100", r.novedad.nivel, delta_color="off", delta_arrow="off",
+              help="Qué tan distinta es de todo lo que hay en el catálogo. Un 97 quiere decir "
+                   "que está más lejos de lo conocido que el 97% de las toxinas del catálogo.")
     c3.metric("Seguridad de la familia", f"{r.prediccion.confianza:.0%}",
-              "baja" if r.prediccion.baja_confianza else "suficiente", delta_color="off")
+              "baja" if r.prediccion.baja_confianza else "suficiente", delta_color="off", delta_arrow="off",
+              help="Qué tan convencido está el sistema de la familia que eligió. Ojo: siempre "
+                   "elige alguna, así que hay que mirarla junto con la novedad.")
 
     st.markdown(_veredicto(r))
-    st.markdown(f"**Familia probable:** {r.prediccion.familia}")
+    st.markdown(f"**Familia probable:** {r.prediccion.familia}",
+                help="El grupo de toxinas conocidas al que más se parece. Toxinas de la misma "
+                     "familia suelen actuar de forma parecida.")
 
     for aviso in r.advertencias:
         st.warning(aviso)
@@ -148,6 +155,115 @@ def barra_lateral(motor: Motor):
 
 
 # --------------------------------------------------------------- pestañas ----
+PASOS = [
+    ("1. Revisar", "Chequea que la secuencia use solo las 20 letras válidas y tenga un largo "
+                   "razonable. Si no, avisa en vez de inventar un resultado."),
+    ("2. Traducir a números", "Un modelo de lenguaje para proteínas, **ESM-2**, convierte la "
+                              "secuencia en un vector de {dim} números (un *embedding*)."),
+    ("3. Reconocer la familia", "Un clasificador entrenado con el catálogo mira ese vector y dice "
+                                "a qué familia se parece y con cuánta seguridad."),
+    ("4. Medir la novedad", "Busca los cinco **vecinos** más cercanos del catálogo. Si están "
+                            "lejos, la secuencia es rara: puntaje de novedad alto."),
+    ("5. Decidir la prioridad", "**Reglas** fijas y escritas, sin IA, combinan novedad, "
+                                "seguridad y origen. Siempre se puede explicar el porqué."),
+]
+
+
+def pestana_intro(motor: Motor):
+    cat = motor.catalogo
+    m = motor.config.get("metricas", {})
+    n_familias = cat.loc[cat["clase_modelable"], "clase"].nunique()
+
+    st.markdown("### Del veneno al remedio: a cuál le apostamos")
+    st.markdown(
+        "Los venenos de serpientes, arañas, escorpiones, ranas e insectos están llenos de "
+        "moléculas que la evolución afinó durante millones de años para actuar sobre el "
+        "cuerpo con mucha precisión. Por eso son una de las fuentes de **medicamentos nuevos** "
+        "más prometedoras que hay.\n\n"
+        "El problema es elegir. Una campaña de muestreo en el noreste argentino deja decenas o "
+        "cientos de secuencias, y estudiar cada una en el laboratorio lleva meses. Hoy se elige "
+        "a ojo, y la que no se parecía a nada conocido, que suele ser la más interesante, queda "
+        "olvidada en una planilla. **VenomScope ordena la campaña en segundos y dice cuáles "
+        "mirar primero.**")
+
+    st.divider()
+    st.markdown("### La biología en un minuto")
+    c1, c2, c3 = st.columns(3, gap="large")
+    with c1:
+        st.markdown(
+            "**Una proteína es un texto.** Se escribe con un alfabeto de 20 letras, los "
+            "**aminoácidos**: por ejemplo `QWPRPQIPP`. Las toxinas son proteínas, y las "
+            "cortas se llaman **péptidos**. Para el sistema, cada una es un *string*.")
+    with c2:
+        st.markdown(
+            "**Las proteínas vienen en familias.** Las que hacen cosas parecidas se parecen "
+            "entre sí, como clases que heredan del mismo padre. Saber la **familia** de una "
+            "toxina da una primera idea de qué hace, sin pisar el laboratorio.")
+    with c3:
+        st.markdown(
+            "**Por qué importa.** El **captopril**, un antihipertensivo de los más vendidos de "
+            "la historia, salió de un péptido de nueve aminoácidos del veneno de la yarará, "
+            "una serpiente que está en nuestro catálogo.")
+
+    st.divider()
+    st.markdown("### Cómo funciona")
+    st.markdown("Cada secuencia pasa por cinco pasos. Los del medio usan inteligencia "
+                "artificial; el primero y el último son reglas, a propósito.")
+    for col, (titulo, texto) in zip(st.columns(len(PASOS)), PASOS):
+        with col.container(border=True, height="stretch"):
+            st.markdown(f"**{titulo}**")
+            st.markdown(texto.format(dim=motor.config["dim"]))
+
+    with st.expander("La misma idea, en términos de informática"):
+        st.markdown(
+            "- **ESM-2** es un modelo de lenguaje como los que usan los chatbots, pero entrenado "
+            "con millones de proteínas en vez de texto. Igual que los *word embeddings* ponen "
+            "cerca palabras con significado parecido, ESM-2 pone cerca proteínas que funcionan "
+            "parecido, aunque las letras sean distintas.\n"
+            "- **El clasificador** es una regresión logística sobre esos vectores. Es simple a "
+            "propósito: con pocos ejemplos por familia, un modelo grande memoriza en vez de "
+            "aprender.\n"
+            "- **La novedad** es detección de anomalías por vecinos más cercanos (k-NN), como "
+            "detectar una compra con tarjeta que no se parece a ninguna habitual.\n"
+            "- **La prioridad** es un `if / else` explícito. El clasificador siempre elige "
+            "alguna familia, aunque la secuencia no se parezca a ninguna (un `switch` sin "
+            "`default`): la novedad es la que avisa cuando eso pasa, y las reglas juntan las "
+            "dos cosas de forma auditable.\n"
+            "- Todo corre en una notebook común, **sin internet y sin placa de video**.")
+
+    st.divider()
+    st.markdown("### Con qué compara")
+    st.markdown(
+        f"Con un **catálogo regional** de {len(cat)} toxinas de {cat['genero_consultado'].nunique()} "
+        f"géneros de animales del noreste argentino, agrupadas en {n_familias} familias, "
+        "descargadas de UniProt, la base pública de proteínas más usada del mundo.")
+
+    if m:
+        st.markdown("### Qué tan bien anda")
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Familia, examen normal", f"{m['macro_f1_esm2'] * 100:.0f}/100",
+                  f"sin IA: {m['macro_f1_composicion'] * 100:.0f}", delta_color="off", delta_arrow="off")
+        c2.metric("Familia, examen difícil", f"{m['macro_f1_esm2_agrupado'] * 100:.0f}/100",
+                  f"sin IA: {m['macro_f1_composicion_agrupado'] * 100:.0f}", delta_color="off", delta_arrow="off")
+        c3.metric("Avisa de familias nunca vistas", f"{m['reservadas_nivel_alto']:.0%}",
+                  "con el corte en 90", delta_color="off", delta_arrow="off")
+        st.caption(
+            "\"Sin IA\" es el mismo clasificador contando cuántas veces aparece cada letra: lo "
+            "que se conseguía sin el modelo de lenguaje. El examen difícil separa las "
+            "secuencias casi idénticas, así el sistema no puede aprobar de memoria; es el "
+            "número realista. Para la última medición escondimos a propósito toxinas de "
+            "familias que el sistema nunca vio y medimos cuántas marca como novedosas.")
+
+    st.divider()
+    st.markdown("### Probalo")
+    st.markdown(
+        "Andá a la pestaña **Una secuencia** y elegí un ejemplo de la lista: hay una toxina "
+        "que ya conocemos, una de otra parte del mundo que el sistema no vio nunca y una "
+        "secuencia con errores. En **Una campaña entera** está el caso real: muchas "
+        "secuencias de golpe, ordenadas por prioridad. El sistema **ayuda a priorizar**; "
+        "la decisión sigue siendo del laboratorio.")
+
+
 def cargar_ejemplo():
     ejemplo = EJEMPLOS[st.session_state["ejemplo"]]
     st.session_state["secuencia"] = ejemplo["secuencia"]
@@ -261,7 +377,9 @@ def pestana_ayuda(motor: Motor):
     st.markdown("#### Los tres números de la pantalla")
     st.markdown(f"""
 **Novedad (0 a 100).** Qué tan lejos está de lo más parecido que tenemos. Un 97 quiere decir:
-*está más lejos de lo conocido que el 97% de las toxinas del catálogo*.
+*está más lejos de lo conocido que el 97% de las toxinas del catálogo*. Desde {u['medio']} se
+considera "algo distinta" y desde {u['alto']} "novedosa"; ese último corte se mueve con el control
+de sensibilidad.
 
 **Seguridad de la familia.** Qué tan convencido está el sistema. Por debajo de {conf:.0%} avisa.
 Ojo: siempre elige alguna familia conocida, aunque la secuencia no se parezca a ninguna. Por eso
@@ -302,19 +420,6 @@ enterara.
 - Sirve para **ordenar y priorizar**. No reemplaza el análisis de laboratorio.
 """)
 
-    with st.expander("Cómo funciona por dentro"):
-        st.markdown(f"""
-1. Revisa que la secuencia sea válida: los 20 aminoácidos estándar, entre 5 y 600 de largo.
-2. La traduce a {motor.config['dim']} números con ESM-2, un modelo entrenado con millones de
-   proteínas. Secuencias que hacen cosas parecidas quedan cerca, aunque se escriban distinto.
-3. La compara con las {motor.config['n_catalogo']} toxinas del catálogo: de ahí salen la familia
-   probable y el puntaje de novedad.
-4. Aplica las reglas de prioridad, que están escritas y se pueden discutir.
-
-Los cortes de novedad están en {u['medio']} y {u['alto']}, y el de arriba se mueve con el control
-de sensibilidad.
-""")
-
 
 # ------------------------------------------------------------------ main ----
 st.title("VenomScope")
@@ -328,7 +433,10 @@ except FileNotFoundError:
     st.stop()
 
 barra_lateral(motor)
-una, campana, ayuda = st.tabs(["Una secuencia", "Una campaña entera", "Cómo leer esto"])
+intro, una, campana, ayuda = st.tabs(["Qué es esto", "Una secuencia", "Una campaña entera",
+                                      "Cómo leer esto"])
+with intro:
+    pestana_intro(motor)
 with una:
     pestana_una(motor)
 with campana:

@@ -22,10 +22,23 @@ def app():
     return at
 
 
-def test_la_app_abre_con_sus_tres_pestanas(app):
-    assert [t.label for t in app.tabs] == ["Una secuencia", "Una campaña entera",
-                                           "Cómo leer esto"]
+def test_la_app_abre_con_sus_cuatro_pestanas(app):
+    assert [t.label for t in app.tabs] == ["Qué es esto", "Una secuencia",
+                                           "Una campaña entera", "Cómo leer esto"]
     assert not app.error
+
+
+def test_la_introduccion_explica_sin_suponer_biologia(app):
+    intro = " ".join(m.value for m in app.tabs[0].markdown)
+    for idea in ["aminoácidos", "familia", "captopril", "ESM-2", "vecinos", "reglas"]:
+        assert idea in intro, f"La introducción no menciona: {idea}"
+
+
+def test_los_numeros_del_resultado_tienen_ayuda(app):
+    app.selectbox(key="ejemplo").select("Toxina de afuera: ziconotida (caracol marino)").run()
+    app.button[0].click().run()
+    ayudas = {m.label: m.help for m in app.metric}
+    assert ayudas["Novedad"] and ayudas["Seguridad de la familia"]
 
 
 def test_ejemplo_novedoso_da_prioridad_alta(app):
