@@ -6,7 +6,8 @@ import unicodedata
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[1]
-ARCHIVOS = [RAIZ / "app.py", *sorted((RAIZ / "venomscope").glob("*.py"))]
+ARCHIVOS = [RAIZ / "app.py", *sorted((RAIZ / "venomscope").glob("*.py")),
+            *sorted((RAIZ / "interfaz").glob("*.py"))]
 
 
 def _emojis(texto: str) -> list[str]:

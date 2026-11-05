@@ -54,9 +54,19 @@ secuencia → validación → embeddings (ESM-2) → clasificador (familia + con
                                             → prioridad (reglas explícitas) → pantalla
 ```
 
+Dos capas, como un backend y un frontend:
+
+- **`venomscope/`, el motor.** Todo el cálculo. No sabe que existe una web: se puede probar solo y lo usa también el script que genera los artefactos.
+- **`interfaz/`, la web.** Solo muestra. Le pide todo al motor a través de `venomscope/analisis.py`.
+
+`tests/test_arquitectura.py` falla si el motor llega a importar algo de la interfaz, así la separación se mantiene sola.
+
 | Archivo | Qué hace |
 |---|---|
-| `app.py` | Interfaz (Streamlit) |
+| `app.py` | Arma la página: título, motor y pestañas |
+| `interfaz/comun.py` | Carga del motor, control de sensibilidad y barra lateral |
+| `interfaz/resultado.py` | La tarjeta de resultado de una secuencia |
+| `interfaz/intro.py`, `una.py`, `campana.py`, `ayuda.py` | Una pestaña cada uno |
 | `venomscope/validacion.py` | Chequeo de la secuencia (mismas reglas que el Notebook 1) |
 | `venomscope/embeddings.py` | Secuencia → 480 números con ESM-2 (**idéntico al Notebook 2**) |
 | `venomscope/clasificador.py` | Familia proteica más probable y confianza |

@@ -71,8 +71,9 @@ Modo lote: tabla ordenada por prioridad, descargable como CSV. Es el caso de uso
 
 ```
 venomscope/
-├── app.py                  # interfaz Streamlit
-├── venomscope/
+├── app.py                  # arma la página (título, motor, pestañas)
+├── interfaz/               # Streamlit: una pestaña por archivo, solo muestra
+├── venomscope/             # el motor: no importa Streamlit (lo verifica tests/test_arquitectura.py)
 │   ├── embeddings.py       # ESM-2 + pooling (idéntico al notebook)
 │   ├── validacion.py       # chequeo de secuencias
 │   ├── clasificador.py     # carga y predicción
