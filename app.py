@@ -9,11 +9,18 @@ import streamlit as st
 
 from interfaz import ayuda, campana, intro, una
 from interfaz.comun import barra_lateral, obtener_motor
+from interfaz.editorial import aplicar_estilo, bloque
 
-st.set_page_config(page_title="VenomScope", layout="wide")
+st.set_page_config(page_title="VenomScope", layout="wide", initial_sidebar_state="collapsed")
+aplicar_estilo()
 
-st.title("VenomScope")
-st.markdown("Qué péptidos de la fauna del noreste argentino vale la pena investigar.")
+bloque("""
+<div class="vs-cabecera vs-mono">
+  <span>VenomScope</span>
+  <span>Qué péptidos de la fauna del noreste argentino vale la pena investigar</span>
+  <span>TPO IA · UADE 2026</span>
+</div>
+""")
 
 try:
     motor = obtener_motor()
