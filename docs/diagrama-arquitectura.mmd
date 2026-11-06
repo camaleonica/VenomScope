@@ -1,0 +1,82 @@
+%% VenomScope - Diagrama de arquitectura
+%% Tres colores: AZUL = inteligencia artificial, MARRÓN = regla escrita a mano,
+%% GRIS = dato guardado. Se lee de arriba hacia abajo: qué entra, qué decide el
+%% sistema y qué ve el usuario.
+%%
+%% Para verlo: pegar este archivo en https://mermaid.live
+%% o abrirlo en VS Code con la extensión "Markdown Preview Mermaid Support".
+
+flowchart TD
+
+    subgraph ENTRADA["LO QUE ENTRA"]
+        direction LR
+        SEC["Secuencia de aminoácidos<br/><i>pegada, FASTA o CSV</i>"]
+        NEA["¿Es de una especie del NEA?<br/><i>lo aporta la persona, es opcional</i>"]
+    end
+
+    subgraph SISTEMA["LO QUE HACE EL SISTEMA"]
+        direction TB
+        VAL{{"1 · Revisar la secuencia<br/><i>20 letras válidas, largo 5 a 600</i>"}}
+        EMB["2 · Traducir a números<br/><b>ESM-2</b><br/><i>480 números por secuencia</i>"]
+        CLF["3 · Reconocer la familia<br/><b>Clasificador entrenado</b><br/><i>familia + nivel de seguridad</i>"]
+        NOV["4 · Medir la novedad<br/><b>Vecinos más cercanos</b><br/><i>puntaje 0 a 100</i>"]
+        PRI{{"5 · Decidir la prioridad<br/><i>reglas explícitas:<br/>la función de utilidad</i>"}}
+    end
+
+    subgraph DATOS["LO QUE EL SISTEMA YA SABE"]
+        direction LR
+        CAT[("Catálogo regional<br/>584 toxinas · 24 familias<br/><i>fuente: UniProt</i>")]
+        UMB[("Umbrales y configuración<br/><i>75 y 90, ajustable</i>")]
+    end
+
+    subgraph SALIDA["LO QUE VE EL USUARIO"]
+        direction TB
+        FICHA["Familia probable y seguridad"]
+        PUNT["Puntaje de novedad"]
+        VECI["Las 5 toxinas más parecidas"]
+        MAPA["Mapa del catálogo"]
+        REC["<b>Prioridad: alta, media o baja</b><br/><i>con las razones escritas</i>"]
+        TABLA["Campaña ordenada<br/><i>descargable como planilla</i>"]
+    end
+
+    DECIDE(["La decisión la toma<br/>el laboratorio"])
+
+    SEC --> VAL
+    VAL -->|"válida"| EMB
+    VAL -->|"inválida: avisa, no inventa"| FICHA
+    EMB --> CLF
+    EMB --> NOV
+    CAT -.->|"entrenamiento"| CLF
+    CAT -.->|"referencia"| NOV
+    UMB -.-> NOV
+    UMB -.-> PRI
+    CLF -->|"¿seguridad baja?"| PRI
+    NOV -->|"nivel de novedad"| PRI
+    NEA -.->|"desempata"| PRI
+
+    CLF --> FICHA
+    NOV --> PUNT
+    NOV --> VECI
+    NOV --> MAPA
+    PRI --> REC
+    REC --> TABLA
+    REC --> DECIDE
+
+    classDef ia fill:#1d4ed8,stroke:#1e3a8a,stroke-width:2px,color:#ffffff
+    classDef regla fill:#b45309,stroke:#78350f,stroke-width:2px,color:#ffffff
+    classDef dato fill:#e4e4e7,stroke:#52525b,stroke-width:2px,color:#18181b
+    classDef entrada fill:#ffffff,stroke:#18181b,stroke-width:2px,color:#18181b
+    classDef salida fill:#f4f4f5,stroke:#18181b,stroke-width:1px,color:#18181b
+    classDef humano fill:#c7ddf2,stroke:#18181b,stroke-width:3px,color:#18181b
+
+    class EMB,CLF,NOV ia
+    class VAL,PRI regla
+    class CAT,UMB dato
+    class SEC,NEA entrada
+    class FICHA,PUNT,VECI,MAPA,REC,TABLA salida
+    class DECIDE humano
+
+    style ENTRADA fill:#ffffff,stroke:#a1a1aa,stroke-dasharray: 4 4
+    style SISTEMA fill:#fafafa,stroke:#18181b,stroke-width:2px
+    style DATOS fill:#ffffff,stroke:#a1a1aa,stroke-dasharray: 4 4
+    style SALIDA fill:#ffffff,stroke:#a1a1aa,stroke-dasharray: 4 4
