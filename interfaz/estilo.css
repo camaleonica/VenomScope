@@ -264,12 +264,14 @@ code { font-family: var(--mono); background: transparent; color: inherit;
 [data-testid="stSidebar"] { background: var(--blanco); border-right: 1px solid var(--negro); }
 
 /* ------------------------------------------------- pantallas de trabajo -- */
-/* El control de sensibilidad va en una franja angosta entre dos secciones. */
+/* El control de sensibilidad va en una franja angosta, siempre debajo o al lado
+ * de lo que controla, nunca arriba del título. */
 [class*="_sensibilidad"] {
   padding-top: 28px !important;
   padding-bottom: 28px !important;
   border-top: 1px solid var(--negro);
 }
+[class*="st-key-franja_umbral_"] { margin-top: 8px; }
 /* Dos secciones blancas seguidas se separan con una línea, no con color. */
 [class*="st-key-blanca_resultado"], [class*="st-key-blanca_campana_tabla"] {
   border-top: 1px solid var(--negro);
@@ -285,6 +287,10 @@ code { font-family: var(--mono); background: transparent; color: inherit;
   padding-top: 12px;
   margin: 56px 0 16px 0;
 }
+
+/* Qué muestra se está viendo, justo debajo del título de la sección. */
+.vs-muestra { margin: -48px 0 0 0; color: var(--gris-texto); }
+.vs-muestra b { color: var(--negro); }
 
 /* La prioridad, en letras grandes: es lo primero que hay que ver. */
 .vs-prioridad {

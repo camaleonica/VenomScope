@@ -30,7 +30,7 @@ def test_la_app_abre_y_analiza_sin_internet(sin_internet):
     assert not at.error
 
     at.selectbox(key="ejemplo").select("El caso difícil: ShK (anémona de mar)").run()
-    at.button[0].click().run()
+    at.button(key="analizar_una").click().run()
     assert not at.exception
     assert "99/100" in " ".join(m.value for m in at.markdown)
 

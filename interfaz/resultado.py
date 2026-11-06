@@ -3,6 +3,8 @@
 Son dos secciones: la blanca con la respuesta y la tabla, y la negra con el mapa 3D,
 que conserva su propia paleta oscura (venomscope/mapa.py).
 """
+import html
+
 import streamlit as st
 
 from interfaz.editorial import bloque, cabeza, marca, seccion, subtitulo
@@ -27,6 +29,13 @@ def _veredicto(r) -> str:
     return "**Se parece mucho a toxinas ya estudiadas.** Probablemente sea una variante."
 
 
+def _nombre_muestra(r) -> str:
+    """Qué muestra se está mirando. Hace falta cuando se llega acá desde una fila
+    de la campaña: sin esto no hay forma de saber cuál se abrió."""
+    largo = (f" · {len(r.validacion.secuencia)} aminoácidos" if r.validacion.es_valida else "")
+    return (f'<p class="vs-muestra vs-mono">Muestra: <b>{html.escape(r.id)}</b>{largo}</p>')
+
+
 def _palabra_prioridad(nivel: str) -> str:
     """La prioridad en letras grandes. Solo la alta lleva resaltador: es la que hay que ver."""
     texto = marca(nivel) if nivel == prioridad.ALTA else nivel
@@ -38,10 +47,10 @@ def mostrar_resultado(r, motor: Motor, clave: str = "mapa", n: int = 2, total: i
     """`n` y `total` numeran las secciones: el resultado es la n y el mapa la n + 1."""
     with seccion(f"resultado_{clave}"):
         if not r.validacion.es_valida:
-            bloque(cabeza(n, total, "Resultado", "No se pu[d]o|analizar"))
+            bloque(cabeza(n, total, "Resultado", "No se pu[d]o|analizar") + _nombre_muestra(r))
             st.error("**No se pudo analizar esta secuencia.**\n\n" + "\n\n".join(r.validacion.errores))
             return
-        bloque(cabeza(n, total, "Resultado", "Re[s]ultado"))
+        bloque(cabeza(n, total, "Resultado", "Re[s]ultado") + _nombre_muestra(r))
         _respuesta(r, clave)
 
     if r.punto3d is not None:

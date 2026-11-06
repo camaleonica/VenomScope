@@ -1,20 +1,38 @@
 """Lo que usan varias pantallas: el motor, el control de sensibilidad y la barra lateral."""
 import streamlit as st
 
-from venomscope import prioridad
-from venomscope.analisis import SIN_ANALIZAR, Motor
+from venomscope.analisis import ARTIFACTS, Motor
+from venomscope.lectura import leer_archivo
 
 
-COLOR_PRIORIDAD = {prioridad.ALTA: "red", prioridad.MEDIA: "orange", prioridad.BAJA: "green",
-                   SIN_ANALIZAR: "gray"}
 OPCIONES_NEA = {"Sí": True, "No": False, "No sé": None}
 
 
 @st.cache_resource(show_spinner="Preparando el modelo (solo la primera vez)...")
 def obtener_motor() -> Motor:
-    motor = Motor()
-    motor.analizar([("calentamiento", "ACDEFGHIK", None)])   # deja ESM-2 cargado en memoria
-    return motor
+    return Motor()
+
+
+@st.cache_resource(show_spinner="Analizando la campaña de demostración...")
+def campana_demo(_motor: Motor) -> list:
+    """La campaña de prueba, analizada una sola vez por sesión.
+
+    Es lo que ve el usuario al abrir la app, así que no se le pide que cargue
+    nada para entender el producto. De paso deja ESM-2 cargado en memoria, así
+    la primera consulta propia ya sale instantánea.
+    """
+    ruta = ARTIFACTS.parent / "ejemplos" / "campana_demo.csv"
+    return _motor.analizar(leer_archivo(ruta.name, ruta.read_bytes(), None))
+
+
+def umbrales_elegidos(motor: Motor, clave: str) -> dict:
+    """Los umbrales vigentes, sin dibujar nada.
+
+    Sirve para calcular una tabla ANTES de dibujar el deslizante que la controla:
+    el valor ya está en el estado de la sesión desde la última vez que se movió.
+    """
+    umbrales = motor.config["novedad"]["umbrales_puntaje"]
+    return {**umbrales, "alto": st.session_state.get(clave, umbrales["alto"])}
 
 
 def control_umbral(motor: Motor, clave: str) -> dict:

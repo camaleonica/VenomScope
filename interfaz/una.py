@@ -55,7 +55,8 @@ def _entrada(motor: Motor):
     if st.session_state.get("ejemplo"):
         st.caption(EJEMPLOS[st.session_state["ejemplo"]]["nota"])
 
-    if st.button("Analizar", type="primary", disabled=not texto.strip()):
+    if st.button("Analizar", type="primary", key="analizar_una",
+                     disabled=not texto.strip()):
         entradas = leer_fasta(texto, OPCIONES_NEA[st.session_state["nea_una"]])
         if len(entradas) > 1:
             st.info(f"Hay {len(entradas)} secuencias y se analiza la primera. "

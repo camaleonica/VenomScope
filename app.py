@@ -30,13 +30,15 @@ except FileNotFoundError:
     st.stop()
 
 barra_lateral(motor)
-tab_intro, tab_una, tab_campana, tab_ayuda = st.tabs(
-    ["Qué es esto", "Una secuencia", "Una campaña entera", "Cómo leer esto"])
-with tab_intro:
-    intro.mostrar(motor)
-with tab_una:
-    una.mostrar(motor)
+# La campaña va primera: es el caso de uso real del laboratorio, y abre con la
+# de demostración ya analizada. Una secuencia suelta es el detalle, no la puerta.
+tab_campana, tab_una, tab_intro, tab_ayuda = st.tabs(
+    ["La campaña", "Una secuencia", "Qué es esto", "Cómo leer esto"])
 with tab_campana:
     campana.mostrar(motor)
+with tab_una:
+    una.mostrar(motor)
+with tab_intro:
+    intro.mostrar(motor)
 with tab_ayuda:
     ayuda.mostrar(motor)

@@ -23,27 +23,35 @@ def app():
 
 
 def test_la_app_abre_con_sus_cuatro_pestanas(app):
-    assert [t.label for t in app.tabs] == ["Qué es esto", "Una secuencia",
-                                           "Una campaña entera", "Cómo leer esto"]
+    assert [t.label for t in app.tabs] == ["La campaña", "Una secuencia",
+                                           "Qué es esto", "Cómo leer esto"]
+    assert not app.error
+
+
+def test_la_app_abre_con_la_campana_de_demostracion_ya_analizada(app):
+    """La pantalla de inicio no le pide nada al usuario: ya muestra resultados."""
+    texto = texto_de(app)
+    assert "11 muestras analizadas" in texto
+    assert "Prioridad alta" in texto and "Sin correspondencia" in texto
     assert not app.error
 
 
 def test_la_introduccion_explica_sin_suponer_biologia(app):
-    intro = " ".join(m.value for m in app.tabs[0].markdown)
+    intro = " ".join(m.value for m in app.tabs[2].markdown)
     for idea in ["aminoácidos", "familia", "captopril", "ESM-2", "vecinos", "reglas"]:
         assert idea in intro, f"La introducción no menciona: {idea}"
 
 
 def test_los_numeros_del_resultado_tienen_ayuda(app):
     app.selectbox(key="ejemplo").select("Toxina de afuera: ziconotida (caracol marino)").run()
-    app.button[0].click().run()
+    app.button(key="analizar_una").click().run()
     ayudas = {m.label: m.help for m in app.metric}
     assert ayudas["Novedad"] and ayudas["Seguridad de la familia"]
 
 
 def test_ejemplo_novedoso_da_prioridad_alta(app):
     app.selectbox(key="ejemplo").select("Toxina de afuera: ziconotida (caracol marino)").run()
-    app.button[0].click().run()
+    app.button(key="analizar_una").click().run()
     assert not app.exception
     assert "Alta" in texto_de(app)
     assert "No se parece a nada que tengamos" in texto_de(app)
@@ -51,37 +59,33 @@ def test_ejemplo_novedoso_da_prioridad_alta(app):
 
 def test_ejemplo_del_catalogo_se_reconoce(app):
     app.selectbox(key="ejemplo").select("Toxina conocida: fosfolipasa de yarará (NEA)").run()
-    app.button[0].click().run()
+    app.button(key="analizar_una").click().run()
     assert "ya está en el catálogo" in texto_de(app)
     assert "Baja" in texto_de(app)
 
 
 def test_secuencia_invalida_muestra_error(app):
     app.text_area(key="secuencia").input("MKTXXZ").run()
-    app.button[0].click().run()
+    app.button(key="analizar_una").click().run()
     assert app.error
     assert "No se pudo analizar" in app.error[0].value
 
 
 def test_campana_de_demostracion(app):
-    app.toggle[0].set_value(True).run()
-    app.button[1].click().run()
+    """Las 11 muestras de prueba, con la que no se puede leer marcada aparte."""
     assert not app.exception
-    metricas = {m.label: m.value for m in app.metric}
-    assert metricas["Secuencias"] == "11"
-    assert metricas["No analizadas"] == "1"
     assert len(app.dataframe) >= 2   # la tabla de la campaña + los vecinos del detalle
 
 
 def test_el_deslizante_arranca_en_90(app):
     app.selectbox(key="ejemplo").select("El caso difícil: ShK (anémona de mar)").run()
-    app.button[0].click().run()
+    app.button(key="analizar_una").click().run()
     assert app.slider(key="umbral_una").value == 90
 
 
 def test_mover_el_deslizante_cambia_el_veredicto(app):
     app.selectbox(key="ejemplo").select("Toxina de afuera: ziconotida (caracol marino)").run()
-    app.button[0].click().run()
+    app.button(key="analizar_una").click().run()
     assert "Alta" in texto_de(app)
 
     app.slider(key="umbral_una").set_value(99).run()   # ziconotida saca 98: ya no llega
@@ -91,13 +95,13 @@ def test_mover_el_deslizante_cambia_el_veredicto(app):
 
 def test_el_deslizante_explica_sus_consecuencias(app):
     app.selectbox(key="ejemplo").select("El caso difícil: ShK (anémona de mar)").run()
-    app.button[0].click().run()
+    app.button(key="analizar_una").click().run()
     assert "falsas alarmas" in texto_de(app)
 
 
 def test_el_caso_shk_dibuja_el_mapa(app):
     app.selectbox(key="ejemplo").select("El caso difícil: ShK (anémona de mar)").run()
-    app.button[0].click().run()
+    app.button(key="analizar_una").click().run()
     assert not app.exception
     assert "99/100" in texto_de(app)
     assert "la posición es orientativa" in " ".join(c.value for c in app.caption)
