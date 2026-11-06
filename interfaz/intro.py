@@ -5,7 +5,7 @@ cómo funciona, qué tan bien anda y cómo probarlo.
 """
 import streamlit as st
 
-from interfaz.editorial import bloque, foto, marca, marcador, numero, seccion, titulo
+from interfaz.editorial import bloque, cabeza, foto, marca, marcador, numero, seccion, titulo
 from venomscope.analisis import Motor
 
 TOTAL = 5
@@ -30,7 +30,7 @@ PASOS = [
 
 
 def _cabeza(n: int, nombre: str, texto_titulo: str) -> str:
-    return f'<div class="vs-cabeza">{titulo(texto_titulo)}{marcador(n, TOTAL, nombre)}</div>'
+    return cabeza(n, TOTAL, nombre, texto_titulo)
 
 
 def _portada(motor: Motor):

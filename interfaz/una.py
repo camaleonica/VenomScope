@@ -2,6 +2,7 @@
 import streamlit as st
 
 from interfaz.comun import OPCIONES_NEA, control_umbral
+from interfaz.editorial import bloque, cabeza, marca, seccion
 from interfaz.resultado import mostrar_resultado
 from venomscope.analisis import Motor, reevaluar
 from venomscope.ejemplos import EJEMPLOS
@@ -14,10 +15,33 @@ def cargar_ejemplo():
     st.session_state["nea_una"] = ejemplo["nea"]
 
 
+TOTAL = 3   # entrada, resultado y mapa
+
+
 def mostrar(motor: Motor):
     # El valor inicial se fija acá y no con index= en el radio: al elegir un ejemplo
     # lo pisamos desde session_state, y Streamlit se queja si se hacen las dos cosas.
     st.session_state.setdefault("nea_una", "No sé")
+    with seccion("una_entrada"):
+        _entrada(motor)
+
+    if "resultado_una" in st.session_state:
+        resultado = st.session_state["resultado_una"]
+        if resultado.validacion.es_valida:
+            with seccion("una_sensibilidad"):
+                reevaluar([resultado], control_umbral(motor, "umbral_una"))
+        mostrar_resultado(resultado, motor, clave="mapa_una", n=2, total=TOTAL)
+
+
+def _entrada(motor: Motor):
+    bloque(f"""
+    {cabeza(1, TOTAL, "Entrada", "Una se[c]uencia")}
+    <div class="vs-esquina" style="margin-bottom:48px">
+      <div class="vs-chico">Pegá las letras de un péptido, o elegí uno de los ejemplos. En
+      segundos dice a qué familia se parece, qué tan nuevo es y
+      {marca("qué prioridad merece")}.</div>
+    </div>
+    """)
 
     c1, c2 = st.columns([3, 1])
     with c1:
@@ -38,11 +62,3 @@ def mostrar(motor: Motor):
                     "Para varias, usá la otra pestaña.")
         with st.spinner("Analizando..."):
             st.session_state["resultado_una"] = motor.analizar(entradas[:1])[0]
-
-    if "resultado_una" in st.session_state:
-        st.divider()
-        resultado = st.session_state["resultado_una"]
-        if resultado.validacion.es_valida:
-            reevaluar([resultado], control_umbral(motor, "umbral_una"))
-            st.divider()
-        mostrar_resultado(resultado, motor, clave="mapa_una")

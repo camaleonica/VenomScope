@@ -48,7 +48,8 @@ Son cinco archivos en `artifacts/`, y los generan por igual la sección 7 del No
 - **Umbrales de novedad**: 75 (algo distinta) y 90 (novedosa). El 90 salió de bajar el 95 original: detecta 89% de las familias nunca vistas en vez de 71%, a cambio de 10% de falsas alarmas en vez de 5%. El usuario lo mueve desde la app entre 80 y 99.
 - **Reglas de prioridad**: están en `venomscope/prioridad.py`, en la sección REGLAS, y son explícitas a propósito.
 - **Qué número reportar**: los dos. 93 sobre 100 en el examen estándar y 66 en el examen que agrupa las secuencias casi idénticas, que es el realista.
-- **Sin emojis en la interfaz** (hay un test que lo verifica) y tema oscuro en `.streamlit/config.toml`.
+- **Sin emojis en la interfaz** (hay un test que lo verifica).
+- **Diseño editorial** (reemplazó al tema oscuro): blanco y negro puros, un único acento `#C7DDF2` como resaltador, grilla de 1px, títulos enormes con letras en Silkscreen. Todo el aspecto vive en `interfaz/estilo.css` y las piezas en `interfaz/editorial.py`. El mapa 3D es la excepción: bloque negro con su paleta propia. Tipografías en `static/fuentes/` (anda sin internet); fotos en `assets/img/` (ver su README).
 
 ## Lo que hace la app (Streamlit)
 Entrada: una secuencia pegada o un archivo FASTA/CSV con varias.

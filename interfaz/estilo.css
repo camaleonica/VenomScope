@@ -263,6 +263,119 @@ code { font-family: var(--mono); background: transparent; color: inherit;
 
 [data-testid="stSidebar"] { background: var(--blanco); border-right: 1px solid var(--negro); }
 
+/* ------------------------------------------------- pantallas de trabajo -- */
+/* El control de sensibilidad va en una franja angosta entre dos secciones. */
+[class*="_sensibilidad"] {
+  padding-top: 28px !important;
+  padding-bottom: 28px !important;
+  border-top: 1px solid var(--negro);
+}
+/* Dos secciones blancas seguidas se separan con una línea, no con color. */
+[class*="st-key-blanca_resultado"], [class*="st-key-blanca_campana_tabla"] {
+  border-top: 1px solid var(--negro);
+}
+
+/* Subtítulo chico y numerado dentro de una sección. */
+.vs-sub {
+  font-family: var(--mono);
+  font-size: 11px !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-top: 1px solid currentColor;
+  padding-top: 12px;
+  margin: 56px 0 16px 0;
+}
+
+/* La prioridad, en letras grandes: es lo primero que hay que ver. */
+.vs-prioridad {
+  font-family: var(--grotesca);
+  font-weight: 500;
+  font-size: clamp(56px, 7vw, 112px) !important;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  margin: 8px 0 0 0;
+}
+.vs-prioridad--baja { color: #8a8a8a; }
+
+/* La frase del veredicto: más grande que el texto chico, en una columna corta. */
+[class*="st-key-veredicto_"] p {
+  font-size: clamp(20px, 2vw, 28px) !important;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  max-width: 34ch;
+  margin: 48px 0 16px 0;
+}
+
+/* Las métricas de Streamlit: etiqueta en monoespaciada chica, número grande. */
+[data-testid="stMetricLabel"] p,
+[data-testid="stWidgetLabel"] p,
+[data-testid="stWidgetLabel"] label {
+  font-family: var(--mono);
+  font-size: 11px !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+[data-testid="stMetricValue"] {
+  font-family: var(--mono);
+  font-size: clamp(40px, 4.4vw, 72px) !important;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+[data-testid="stMetricDelta"] {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: transparent !important;
+  color: var(--negro) !important;
+  padding: 0;
+}
+
+/* Botones: negros y cuadrados; al pasar el mouse, el resaltador. */
+[data-testid^="stBaseButton"] {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border: 1px solid var(--negro) !important;
+  border-radius: 0 !important;
+  padding: 10px 22px;
+}
+[data-testid="stBaseButton-primary"] { background: var(--negro); color: var(--blanco); }
+[data-testid="stBaseButton-primary"]:hover:not(:disabled),
+[data-testid="stBaseButton-secondary"]:hover:not(:disabled) {
+  background: var(--acento); color: var(--negro);
+}
+[data-testid^="stBaseButton"] p { font-size: 12px !important; }
+[data-testid^="stBaseButton"]:disabled { opacity: 0.35; }
+
+/* Campos de texto: la secuencia se escribe en monoespaciada, como en el laboratorio. */
+[data-testid="stTextArea"] textarea { font-family: var(--mono); font-size: 13px; }
+[data-testid="stTextArea"] [data-baseweb="textarea"] { border: 1px solid var(--negro); border-radius: 0; }
+[data-testid="stFileUploaderDropzone"] { background: transparent; border: 1px dashed var(--negro); border-radius: 0; }
+
+/* Avisos: sin fondos de color, una línea gruesa a la izquierda y nada más. */
+[data-testid="stAlertContainer"] {
+  background: transparent !important;
+  border: 1px solid var(--negro);
+  border-left-width: 6px;
+  border-radius: 0;
+  color: var(--negro);
+}
+[data-testid="stAlertContentError"] { border-color: var(--negro); }
+[data-testid="stAlertContainer"] p { font-size: 13px; }
+
+[data-testid="stCaptionContainer"] { font-size: var(--texto-chico); color: var(--gris-texto); max-width: 90ch; }
+[class*="st-key-negra_"] [data-testid="stCaptionContainer"],
+[class*="st-key-negra_"] [data-testid="stCaptionContainer"] p { color: var(--gris-texto-oscuro); }
+hr { border-color: var(--negro) !important; }
+
+/* El mapa 3D: el bloque negro toma el mismo fondo del gráfico, así no se ve el recuadro. */
+[class*="st-key-negra_mapa"] { background-color: #09090b; }
+
+/* La barra lateral: monoespaciada chica, como las esquinas de la página. */
+[data-testid="stSidebar"] h3 { font-family: var(--mono); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; }
+[data-testid="stSidebar"] p, [data-testid="stSidebar"] td, [data-testid="stSidebar"] th { font-size: 13px; }
+
 /* ------------------------------------------------------------- celular -- */
 @media (max-width: 760px) {
   :root { --margen: 16px; --modulo: 80px; }

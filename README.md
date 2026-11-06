@@ -77,7 +77,10 @@ Dos capas, como un backend y un frontend:
 | `venomscope/lectura.py` | Lectura de FASTA y CSV |
 | `venomscope/contrato.py` | Qué tiene que haber en `artifacts/` para que la app arranque |
 | `scripts/construir_artefactos.py` | Genera los artefactos y mide el desempeño |
-| `.streamlit/config.toml` | Tema oscuro de la interfaz |
+| `.streamlit/config.toml` | Tema claro y tipografías locales |
+| `interfaz/estilo.css`, `interfaz/editorial.py` | El diseño editorial: todo el aspecto y sus piezas |
+| `static/fuentes/` | Space Grotesk, Silkscreen y JetBrains Mono (licencia OFL), para no depender de internet |
+| `assets/img/` | Las fotos de la introducción (ver su README) |
 
 ## El contrato con el notebook
 

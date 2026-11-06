@@ -53,6 +53,16 @@ def marcador(numero: int, total: int, nombre: str) -> str:
             f'<span>{html.escape(nombre)}</span></div>')
 
 
+def cabeza(n: int, total: int, nombre: str, texto_titulo: str) -> str:
+    """El arranque de cada sección: título grande a la izquierda, marcador a la derecha."""
+    return f'<div class="vs-cabeza">{titulo(texto_titulo)}{marcador(n, total, nombre)}</div>'
+
+
+def subtitulo(n: int, texto: str) -> str:
+    """Un subtítulo chico y numerado dentro de una sección: 01  LAS MÁS PARECIDAS."""
+    return f'<p class="vs-sub">{numero(n)}{html.escape(texto)}</p>'
+
+
 def marca(frase: str) -> str:
     """Una frase corta pasada con resaltador."""
     return f'<mark class="vs-marca">{frase}</mark>'
