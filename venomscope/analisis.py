@@ -3,6 +3,7 @@
 La app solo usa esto. Carga los artefactos una vez (Motor) y analiza listas
 de secuencias, que es el caso real: una campaña de muestreo entera.
 """
+import copy
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -11,7 +12,8 @@ import joblib
 import numpy as np
 import pandas as pd
 
-from venomscope import clasificador, contrato, novedad, prioridad
+from venomscope import clasificador, contrato, novedad, prioridad, seguimiento
+from venomscope.cache_embeddings import embeber_con_cache
 from venomscope.clasificador import Prediccion
 from venomscope.embeddings import MODELO, embeber
 from venomscope.grupos import nombre as nombre_grupo
@@ -33,9 +35,14 @@ class Resultado:
     advertencias: list[str] = field(default_factory=list)
     es_del_nea: bool | None = None
     punto3d: np.ndarray | None = None          # su lugar en el mapa, para el gráfico
+    embedding: np.ndarray | None = None        # su vector, para comparar muestras entre sí (plan de laboratorio)
 
 
 class Motor:
+    # Huella de lo que el laboratorio confirmó y este motor ya sabe (ver `con_confirmadas`).
+    # Vacía en el motor original, que es el que carga los artefactos.
+    firma = ""
+
     def __init__(self, carpeta: Path = ARTIFACTS):
         contrato.verificar(carpeta)
         self.config = json.loads((carpeta / "config.json").read_text())
@@ -63,16 +70,13 @@ class Motor:
         if not validas:
             return resultados
 
-        X = embeber([resultados[k].validacion.secuencia for k in validas])
+        X = embeber_con_cache([resultados[k].validacion.secuencia for k in validas], embeber)
         predicciones = clasificador.predecir(self.modelo, X, self.config["clasificador"]["umbral_confianza"])
         novedades = self.detector.analizar(X, k=self.config["novedad"]["k_vecinos"])
         puntos3d = self.pca3d.transform(X)   # su lugar en el mapa guardado
 
-        for k, pred, nov, punto in zip(validas, predicciones, novedades, puntos3d):
+        for k, pred, nov, punto, vector in zip(validas, predicciones, novedades, puntos3d, X):
             r = resultados[k]
-            r.prediccion, r.novedad, r.punto3d = pred, nov, punto
-            r.es_del_nea = nea[k]
-            r.prioridad = prioridad.calcular(nov.nivel, nov.puntaje, pred.baja_confianza, nea[k])
             r.vecinos = self.catalogo.iloc[nov.vecinos][
                 ["accession", "nombre_proteina", "especie", "grupo", "clase", "en_nea", "largo"]
             ].assign(
@@ -80,12 +84,49 @@ class Motor:
                 parecido=[self.detector.parecido(d) for d in nov.distancias],
             ).reset_index(drop=True)
             r.advertencias = list(r.validacion.advertencias)
+
+            cercano = r.vecinos.iloc[0]
+            if seguimiento.es_confirmada(cercano["accession"]) and nov.nivel == novedad.NIVEL_CONOCIDA:
+                # Se parece a algo que el laboratorio ya estudió: la familia ya se conoce, y eso vale
+                # más que la duda de un clasificador que nunca vio esa familia. La seguridad es el
+                # parecido con la muestra confirmada, contra el mismo umbral de siempre.
+                confianza = float(cercano["parecido"]) / 100.0
+                pred = Prediccion(familia=cercano["clase"], confianza=confianza, alternativas=[],
+                                  baja_confianza=confianza < self.config["clasificador"]["umbral_confianza"])
+                r.advertencias.append(
+                    f"Se parece a «{cercano['nombre_proteina']}», que el laboratorio ya estudió y "
+                    f"confirmó como {cercano['clase']}.")
+
+            r.prediccion, r.novedad, r.punto3d, r.embedding = pred, nov, punto, vector
+            r.es_del_nea = nea[k]
+            r.prioridad = prioridad.calcular(nov.nivel, nov.puntaje, pred.baja_confianza, nea[k])
             if pred.baja_confianza:
                 r.advertencias.append(
-                    f"El sistema no está seguro de la familia ({pred.confianza:.0%} de confianza). "
-                    "Otras posibles: " + ", ".join(f"{f} ({p:.0%})" for f, p in pred.alternativas) + "."
-                )
+                    f"El sistema no está seguro de la familia ({pred.confianza:.0%} de confianza)."
+                    + (" Otras posibles: " + ", ".join(f"{f} ({p:.0%})" for f, p in pred.alternativas) + "."
+                       if pred.alternativas else ""))
         return resultados
+
+
+    def con_confirmadas(self, confirmadas: list[seguimiento.Confirmada], embeber_fn=None) -> "Motor":
+        """Una copia de este motor que además conoce las muestras que el laboratorio confirmó.
+
+        La novedad se mide contra lo conocido, así que sumarlas a la referencia hace que sus
+        parientes dejen de verse como novedad. El motor original NO se modifica (la app lo
+        comparte entre sesiones). La escala de novedad queda la del catálogo original, para que
+        los puntajes antes y después sean comparables, y el clasificador no se reentrena.
+        """
+        if not confirmadas:
+            return self
+        X_nuevas = embeber_con_cache([c.secuencia for c in confirmadas], embeber_fn or embeber)
+        nuevo = copy.copy(self)
+        nuevo.catalogo = pd.concat(
+            [self.catalogo, seguimiento.filas_catalogo(confirmadas, self.catalogo.columns)], ignore_index=True)
+        nuevo.detector = novedad.DetectorNovedad(
+            np.vstack([self.detector.X_catalogo, X_nuevas]), self.detector.escala, self.detector.umbrales)
+        nuevo.coords3d = np.vstack([self.coords3d, self.pca3d.transform(X_nuevas)])
+        nuevo.firma = seguimiento.firma_de(confirmadas)
+        return nuevo
 
 
 SIN_ANALIZAR = "No analizada"

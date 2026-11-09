@@ -1,20 +1,27 @@
 """Pestaña "Qué es esto": la introducción para quien no sabe biología."""
 import streamlit as st
 
+from interfaz import componentes
+from interfaz.estilo import mostrar_html
 from venomscope.analisis import Motor
 
 
 PASOS = [
-    ("1. Revisar", "Chequea que la secuencia use solo las 20 letras válidas y tenga un largo "
-                   "razonable. Si no, avisa en vez de inventar un resultado."),
-    ("2. Traducir a números", "Un modelo de lenguaje para proteínas, **ESM-2**, convierte la "
-                              "secuencia en un vector de {dim} números (un *embedding*)."),
-    ("3. Reconocer la familia", "Un clasificador entrenado con el catálogo mira ese vector y dice "
-                                "a qué familia se parece y con cuánta seguridad."),
-    ("4. Medir la novedad", "Busca los cinco **vecinos** más cercanos del catálogo. Si están "
-                            "lejos, la secuencia es rara: puntaje de novedad alto."),
-    ("5. Decidir la prioridad", "**Reglas** fijas y escritas, sin IA, combinan novedad, "
-                                "seguridad y origen. Siempre se puede explicar el porqué."),
+    {"titulo": "Revisar", "tipo": "reglas",
+     "texto": "Chequea que la secuencia use solo las 20 letras válidas y tenga un largo "
+              "razonable. Si no, avisa en vez de inventar un resultado."},
+    {"titulo": "Traducir a números", "tipo": "ia",
+     "texto": "Un modelo de lenguaje para proteínas, <strong>ESM-2</strong>, convierte la "
+              "secuencia en un vector de {dim} números (un <em>embedding</em>)."},
+    {"titulo": "Reconocer la familia", "tipo": "ia",
+     "texto": "Un clasificador entrenado con el catálogo mira ese vector y dice "
+              "a qué familia se parece y con cuánta seguridad."},
+    {"titulo": "Medir la novedad", "tipo": "ia",
+     "texto": "Busca los cinco <strong>vecinos</strong> más cercanos del catálogo. Si están "
+              "lejos, la secuencia es rara: puntaje de novedad alto."},
+    {"titulo": "Decidir la prioridad", "tipo": "reglas",
+     "texto": "<strong>Reglas</strong> fijas y escritas, sin IA, combinan novedad, "
+              "seguridad y origen. Siempre se puede explicar el porqué."},
 ]
 
 
@@ -58,10 +65,8 @@ def mostrar(motor: Motor):
     st.markdown("### Cómo funciona")
     st.markdown("Cada secuencia pasa por cinco pasos. Los del medio usan inteligencia "
                 "artificial; el primero y el último son reglas, a propósito.")
-    for col, (titulo, texto) in zip(st.columns(len(PASOS)), PASOS):
-        with col.container(border=True, height="stretch"):
-            st.markdown(f"**{titulo}**")
-            st.markdown(texto.format(dim=motor.config["dim"]))
+    mostrar_html(componentes.pasos(
+        [{**paso, "texto": paso["texto"].format(dim=motor.config["dim"])} for paso in PASOS]))
 
     with st.expander("La misma idea, en términos de informática"):
         st.markdown(

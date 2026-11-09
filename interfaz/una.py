@@ -37,12 +37,21 @@ def mostrar(motor: Motor):
             st.info(f"Hay {len(entradas)} secuencias y se analiza la primera. "
                     "Para varias, usá la otra pestaña.")
         with st.spinner("Analizando..."):
+            st.session_state["entrada_una"] = entradas[:1]
             st.session_state["resultado_una"] = motor.analizar(entradas[:1])[0]
+            st.session_state["firma_una"] = motor.firma
+
+    # Si el laboratorio confirmó algo después de analizar, el resultado quedó viejo: se rehace.
+    if "entrada_una" in st.session_state and st.session_state.get("firma_una", motor.firma) != motor.firma:
+        st.session_state["resultado_una"] = motor.analizar(st.session_state["entrada_una"])[0]
+        st.session_state["firma_una"] = motor.firma
 
     if "resultado_una" in st.session_state:
         st.divider()
         resultado = st.session_state["resultado_una"]
+        umbrales = None
         if resultado.validacion.es_valida:
-            reevaluar([resultado], control_umbral(motor, "umbral_una"))
+            umbrales = control_umbral(motor, "umbral_una")
+            reevaluar([resultado], umbrales)
             st.divider()
-        mostrar_resultado(resultado, motor, clave="mapa_una")
+        mostrar_resultado(resultado, motor, clave="mapa_una", umbrales=umbrales)

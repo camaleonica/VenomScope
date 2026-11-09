@@ -1,6 +1,8 @@
 """Pestaña "Cómo leer esto": qué significa cada número y qué no puede hacer el sistema."""
 import streamlit as st
 
+from interfaz import componentes
+from interfaz.estilo import mostrar_html
 from venomscope.analisis import Motor
 
 
@@ -9,20 +11,33 @@ def mostrar(motor: Motor):
     conf = motor.config["clasificador"]["umbral_confianza"]
 
     st.markdown("#### Los tres números de la pantalla")
-    st.markdown(f"""
-**Novedad (0 a 100).** Qué tan lejos está de lo más parecido que tenemos. Un 97 quiere decir:
+    st.markdown("Así se ve la escala de novedad con una secuencia que sacó 97:")
+    mostrar_html(componentes.escala_novedad(97, u))
+
+    c1, c2, c3 = st.columns(3, gap="medium")
+    with c1.container(border=True, height="stretch"):
+        st.markdown("**Novedad (0 a 100)**")
+        st.markdown(f"""
+Qué tan lejos está de lo más parecido que tenemos. Un 97 quiere decir:
 *está más lejos de lo conocido que el 97% de las toxinas del catálogo*. Desde {u['medio']} se
 considera "algo distinta" y desde {u['alto']} "novedosa"; ese último corte se mueve con el control
 de sensibilidad.
-
-**Seguridad de la familia.** Qué tan convencido está el sistema. Por debajo de {conf:.0%} avisa.
-Ojo: siempre elige alguna familia conocida, aunque la secuencia no se parezca a ninguna. Por eso
-hay que mirarla junto con la novedad.
-
-**Prioridad.** Sale de reglas fijas, no de la IA, para que siempre se pueda explicar: alta si es
-novedosa o si es algo distinta y viene del NEA; media si es algo distinta o si el sistema duda de
-la familia; baja si se parece mucho a algo ya estudiado.
 """)
+    with c2.container(border=True, height="stretch"):
+        st.markdown("**Seguridad de la familia**")
+        st.markdown(f"""
+Qué tan convencido está el sistema. Por debajo de {conf:.0%} avisa. Ojo: siempre elige alguna
+familia conocida, aunque la secuencia no se parezca a ninguna. Por eso hay que mirarla junto con
+la novedad.
+""")
+    with c3.container(border=True, height="stretch"):
+        st.markdown("**Prioridad**")
+        st.markdown("Sale de reglas fijas, no de la IA, para que siempre se pueda explicar:")
+        mostrar_html(componentes.criterios([
+            ("alta", "alta", "si es novedosa, o si es algo distinta y viene del NEA."),
+            ("media", "media", "si es algo distinta, o si el sistema duda de la familia."),
+            ("baja", "baja", "si se parece mucho a algo ya estudiado."),
+        ]))
 
     with st.expander("Por qué conviene marcar de más"):
         st.markdown("""

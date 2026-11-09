@@ -10,6 +10,7 @@ NOMBRES = {
     "escorpion": "Escorpión",
     "anfibio": "Anfibio",
     "insecto": "Insecto",
+    "laboratorio": "Del laboratorio",
 }
 
 

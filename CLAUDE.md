@@ -78,7 +78,10 @@ venomscope/
 │   ├── validacion.py       # chequeo de secuencias
 │   ├── clasificador.py     # carga y predicción
 │   ├── novedad.py          # puntaje de novedad y vecinos
-│   └── prioridad.py        # reglas de prioridad
+│   ├── prioridad.py        # reglas de prioridad
+│   ├── plan.py             # plan de laboratorio: hallazgos y elección con presupuesto
+│   ├── seguimiento.py      # muestras que el laboratorio confirmó (datos/seguimiento.csv)
+│   └── cache_embeddings.py # caché de embeddings (envuelve a embeber, no lo modifica)
 ├── scripts/construir_artefactos.py
 ├── artifacts/              # salidas del notebook (no versionar archivos grandes)
 ├── notebooks/              # copias de los notebooks de Colab

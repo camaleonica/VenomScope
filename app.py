@@ -2,18 +2,18 @@
 
 Correr con:  .venv/bin/streamlit run app.py
 
-Este archivo solo arma la página. Cada pestaña está en `interfaz/` y todo el
-cálculo en `venomscope/`.
+Este archivo solo arma la página. Cada pestaña está en `interfaz/`, el aspecto en
+`interfaz/estilo.py` y todo el cálculo en `venomscope/`.
 """
 import streamlit as st
 
 from interfaz import ayuda, campana, intro, una
-from interfaz.comun import barra_lateral, obtener_motor
+from interfaz.comun import barra_lateral, motor_con_seguimiento, obtener_motor
+from interfaz.estilo import encabezado, icono
 
-st.set_page_config(page_title="VenomScope", layout="wide")
+st.set_page_config(page_title="VenomScope", page_icon=icono(), layout="wide")
 
-st.title("VenomScope")
-st.markdown("Qué péptidos de la fauna del noreste argentino vale la pena investigar.")
+encabezado()
 
 try:
     motor = obtener_motor()
@@ -22,6 +22,7 @@ except FileNotFoundError:
              "`.venv/bin/python scripts/construir_artefactos.py`")
     st.stop()
 
+motor = motor_con_seguimiento(motor)     # el catálogo más lo que el laboratorio ya confirmó
 barra_lateral(motor)
 tab_intro, tab_una, tab_campana, tab_ayuda = st.tabs(
     ["Qué es esto", "Una secuencia", "Una campaña entera", "Cómo leer esto"])
