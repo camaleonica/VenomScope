@@ -61,20 +61,26 @@ def _problema():
         bloque(f"""
         {_cabeza(1, "El problema", "Del ve[n]eno|al reme[d]io")}
         <div class="vs-esquina">
-          <div class="vs-chico">{numero(1)}Los venenos de serpientes, arañas, escorpiones, ranas e
-            insectos están llenos de moléculas que la evolución afinó durante millones de años
-            para actuar sobre el cuerpo con mucha precisión. Por eso son una de las fuentes de
-            <b>medicamentos nuevos</b> más prometedoras que hay.</div>
-          <div class="vs-chico">{numero(2)}El problema es elegir. Una campaña de muestreo en el
-            noreste argentino deja decenas o cientos de secuencias, y estudiar cada una lleva
-            meses. Hoy se elige a ojo, y la que no se parecía a nada, que suele ser la más
-            interesante, queda olvidada en una planilla.
-            {marca("VenomScope ordena la campaña en segundos y dice cuáles mirar primero.")}</div>
+          <div class="vs-chico">{numero(1)}Los venenos de serpientes, arañas, escorpiones, ranas
+            e insectos contienen moléculas bioactivas que la evolución ha perfeccionado durante
+            millones de años para actuar con gran precisión sobre el organismo. Por ello,
+            representan una fuente extraordinaria para el descubrimiento de
+            <b>nuevos fármacos</b>.</div>
+          <div class="vs-chico">{numero(2)}El desafío no es encontrarlas, sino elegir cuáles
+            estudiar. Una sola campaña de muestreo en el noreste argentino puede generar cientos
+            de secuencias, y analizar cada una en el laboratorio requiere meses de trabajo.
+            Muchas moléculas prometedoras pasan desapercibidas porque no se parecen a nada
+            conocido. {marca("VenomScope analiza y prioriza esas secuencias en segundos")},
+            ayudando a identificar primero los candidatos con mayor potencial biológico y
+            farmacológico.</div>
         </div>
         """)
 
 
 def _biologia():
+    # Los tres textos están escritos con un largo parecido para que las columnas queden
+    # parejas. Si se los edita, conviene mantenerlo (viene del trabajo de Rocio sobre
+    # la introducción).
     with seccion("biologia", alterna=True):
         bloque(f"""
         {_cabeza(2, "Biología", "La bio[l]ogía|en un mi[n]uto")}
@@ -82,18 +88,20 @@ def _biologia():
           {foto("biologia")}
           <div class="vs-columnas" style="--cols:3">
             <div>{numero(1)}<p class="vs-item-titulo">Una proteína es un texto</p>
-              <div class="vs-chico">Se escribe con un alfabeto de 20 letras, los
-              <b>aminoácidos</b>: por ejemplo <code>QWPRPQIPP</code>. Las toxinas son proteínas,
-              y las cortas se llaman <b>péptidos</b>. Para el sistema, cada una es un
-              <i>string</i>.</div></div>
+              <div class="vs-chico">Las proteínas son secuencias de aminoácidos que se representan
+              con un alfabeto de 20 letras, como <code>QWPRPQIPP</code>. Las más cortas se llaman
+              <b>péptidos</b> y forman muchas toxinas. Para VenomScope, son <i>strings</i> que
+              podemos comparar y clasificar automáticamente.</div></div>
             <div>{numero(2)}<p class="vs-item-titulo">Vienen en familias</p>
-              <div class="vs-chico">Las que hacen cosas parecidas se parecen entre sí, como clases
-              que heredan del mismo padre. Saber la <b>familia</b> de una toxina da una primera
-              idea de qué hace, sin pisar el laboratorio.</div></div>
+              <div class="vs-chico">Las proteínas se agrupan en <b>familias</b>, y las más
+              parecidas cumplen funciones similares, como clases que heredan de un mismo padre.
+              Identificar la familia de una toxina permite predecir su actividad antes de ponerla
+              a prueba en el laboratorio.</div></div>
             <div>{numero(3)}<p class="vs-item-titulo">Por qué importa</p>
-              <div class="vs-chico">El <b>captopril</b>, un antihipertensivo de los más vendidos de
-              la historia, salió de un péptido de nueve aminoácidos del veneno de la
-              {marca("yarará")}, una serpiente que está en nuestro catálogo.</div></div>
+              <div class="vs-chico">El <b>captopril</b>, un fármaco que revolucionó el tratamiento
+              de la hipertensión, nació de un péptido de nueve aminoácidos del veneno de la
+              {marca("yarará")}, una especie que está en nuestro catálogo y demuestra el valor
+              médico de estas secuencias.</div></div>
           </div>
         </div>
         """)
@@ -173,12 +181,11 @@ def _probalo(motor: Motor):
             {len(cat)} toxinas de {cat['genero_consultado'].nunique()} géneros de animales del
             noreste argentino, agrupadas en {n_familias} familias y descargadas de UniProt, la
             base pública de proteínas más usada del mundo.</div>
-            <div class="vs-chico">{numero(2)}Andá a la pestaña {marca("Una secuencia")} y elegí un
-            ejemplo: una toxina que ya conocemos, una de otra parte del mundo que el sistema
-            nunca vio y una secuencia con errores.</div>
-            <div class="vs-chico">{numero(3)}En <b>Una campaña entera</b> está el caso real:
-            muchas secuencias de golpe, ordenadas por prioridad. El sistema ayuda a priorizar;
-            la decisión sigue siendo del laboratorio.</div>
+            <div class="vs-chico">{numero(2)}Usá {marca("Una secuencia")} para probar distintos
+            ejemplos: una toxina conocida, una exótica o una secuencia con errores.</div>
+            <div class="vs-chico">{numero(3)}Para un caso real, pasá a <b>Una campaña entera</b>
+            y analizá muchas secuencias juntas, ordenándolas por prioridad. La plataforma ayuda
+            a filtrar, pero la decisión final es del laboratorio.</div>
           </div>
         </div>
         """)

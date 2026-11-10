@@ -64,6 +64,18 @@ def test_ejemplo_del_catalogo_se_reconoce(app):
     assert "Baja" in texto_de(app)
 
 
+def test_vaciar_el_desplegable_de_ejemplos_no_rompe_la_app(app):
+    """El desplegable tiene una cruz para vaciarlo y ahí llega None, no el nombre de un
+    ejemplo. Rompía la app entera con un KeyError, y es de las primeras cosas que alguien
+    toca en una demostración en vivo."""
+    app.selectbox(key="ejemplo").select("Toxina de afuera: ziconotida (caracol marino)").run()
+    secuencia = app.text_area(key="secuencia").value
+
+    app.selectbox(key="ejemplo").set_value(None).run()
+    assert not app.exception
+    assert app.text_area(key="secuencia").value == secuencia   # no le borra lo escrito al usuario
+
+
 def test_secuencia_invalida_muestra_error(app):
     app.text_area(key="secuencia").input("MKTXXZ").run()
     app.button(key="analizar_una").click().run()

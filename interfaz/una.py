@@ -10,7 +10,15 @@ from venomscope.lectura import leer_fasta
 
 
 def cargar_ejemplo():
-    ejemplo = EJEMPLOS[st.session_state["ejemplo"]]
+    """Copia el ejemplo elegido al cuadro de texto.
+
+    El desplegable se puede vaciar con su cruz, y entonces llega None: no hay nada que
+    cargar y se deja la secuencia que esté escrita, en vez de borrarle lo suyo al usuario.
+    """
+    nombre = st.session_state["ejemplo"]
+    if nombre is None:
+        return
+    ejemplo = EJEMPLOS[nombre]
     st.session_state["secuencia"] = ejemplo["secuencia"]
     st.session_state["nea_una"] = ejemplo["nea"]
 

@@ -1,0 +1,118 @@
+<mxfile host="app.diagrams.net" agent="VenomScope" type="device">
+  <diagram id="venomscope-arquitectura" name="Arquitectura">
+    <mxGraphModel dx="1100" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="880" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="titulo" value="VenomScope &#8212; c&#243;mo se integra la IA en el producto" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="40" y="16" width="800" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitulo" value="Qu&#233; entra, qu&#233; decide el sistema y qu&#233; ve la persona" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontColor=#52525B;" vertex="1" parent="1">
+          <mxGeometry x="40" y="44" width="800" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legIA" value="Inteligencia artificial" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3987E5;strokeWidth=2;fontSize=12;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="40" y="78" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="legRegla" value="Regla escrita a mano" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#FDEBE0;strokeColor=#D95926;strokeWidth=2;fontSize=12;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="256" y="78" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="legDato" value="Dato guardado" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#F4F4F5;strokeColor=#52525B;fontSize=12;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="472" y="78" width="200" height="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="entrada" value="&lt;b&gt;Secuencia de amino&#225;cidos&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#52525B&quot;&gt;pegada a mano, o un archivo FASTA o CSV con la campa&#241;a entera&lt;/font&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#18181B;fontSize=13;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="320" y="140" width="440" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sistema" value="LO QUE HACE EL SISTEMA" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#A1A1AA;dashed=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontSize=11;fontColor=#71717A;" vertex="1" parent="1">
+          <mxGeometry x="300" y="230" width="480" height="390" as="geometry" />
+        </mxCell>
+        <mxCell id="step1" value="&lt;b&gt;1 &#183; Revisar la secuencia&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#52525B&quot;&gt;20 letras v&#225;lidas, largo 5 a 600; si no, avisa y no inventa&lt;/font&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FDEBE0;strokeColor=#D95926;strokeWidth=2;fontSize=13;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="320" y="268" width="440" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="step2" value="&lt;b&gt;2 &#183; Traducir a n&#250;meros con ESM-2&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#52525B&quot;&gt;480 n&#250;meros por secuencia; corre en CPU, sin internet&lt;/font&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3987E5;strokeWidth=2;fontSize=13;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="320" y="348" width="440" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="step3" value="&lt;b&gt;3 &#183; Reconocer la familia&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#52525B&quot;&gt;la m&#225;s parecida de las 24 que conoce, con su nivel de confianza&lt;/font&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3987E5;strokeWidth=2;fontSize=13;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="320" y="428" width="210" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="step4" value="&lt;b&gt;4 &#183; Medir la novedad&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#52525B&quot;&gt;qu&#233; tan lejos est&#225; del cat&#225;logo: 0 a 100 y los 5 vecinos&lt;/font&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3987E5;strokeWidth=2;fontSize=13;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="550" y="428" width="210" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="step5" value="&lt;b&gt;5 &#183; Decidir la prioridad&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#52525B&quot;&gt;reglas expl&#237;citas; combina novedad, confianza y si es del NEA&lt;/font&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FDEBE0;strokeColor=#D95926;strokeWidth=2;fontSize=13;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="320" y="534" width="440" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="datos" value="LO QUE YA SABE" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#A1A1AA;dashed=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontSize=11;fontColor=#71717A;" vertex="1" parent="1">
+          <mxGeometry x="40" y="400" width="220" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="catalogo" value="&lt;b&gt;Cat&#225;logo&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#52525B&quot;&gt;584 toxinas de 106 especies&lt;br&gt;fuente: UniProt&lt;/font&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F4F4F5;strokeColor=#52525B;fontSize=13;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="60" y="434" width="180" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="umbrales" value="&lt;b&gt;Umbrales&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#52525B&quot;&gt;novedad: 75 y 90&lt;br&gt;ajustables desde la pantalla&lt;/font&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F4F4F5;strokeColor=#52525B;fontSize=13;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="60" y="526" width="180" height="76" as="geometry" />
+        </mxCell>
+
+        <mxCell id="salida" value="LO QUE VE LA PERSONA" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#A1A1AA;dashed=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontSize=11;fontColor=#71717A;" vertex="1" parent="1">
+          <mxGeometry x="40" y="650" width="1020" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="out1" value="Familia probable y su nivel de confianza" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="64" y="686" width="320" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="out2" value="Novedad de 0 a 100 y los 5 vecinos m&#225;s parecidos" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="64" y="716" width="320" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="out3" value="Prioridad alta, media o baja con sus razones" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="404" y="686" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="out4" value="Campa&#241;a ordenada, descargable como planilla" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="404" y="716" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="out5" value="Mapa 3D del cat&#225;logo" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="754" y="686" width="290" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="out6" value="Plan de laboratorio e informe para imprimir" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="754" y="716" width="290" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="decision" value="&lt;b&gt;La decisi&#243;n la toma el laboratorio&lt;/b&gt;" style="rounded=1;arcSize=40;whiteSpace=wrap;html=1;fillColor=#C7DDF2;strokeColor=#18181B;strokeWidth=2;fontSize=14;fontColor=#18181B;" vertex="1" parent="1">
+          <mxGeometry x="410" y="800" width="280" height="48" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#52525B;endArrow=block;endFill=1;" edge="1" parent="1" source="entrada" target="step1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#52525B;endArrow=block;endFill=1;" edge="1" parent="1" source="step1" target="step2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#52525B;endArrow=block;endFill=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="step2" target="step3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#52525B;endArrow=block;endFill=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="step2" target="step4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#52525B;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="step3" target="step5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#52525B;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="step4" target="step5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="entrena" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#52525B;dashed=1;endArrow=block;endFill=1;fontSize=11;fontColor=#71717A;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="catalogo" target="step3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="umbral" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#52525B;dashed=1;endArrow=block;endFill=1;fontSize=11;fontColor=#71717A;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="umbrales" target="step5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#52525B;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="step5" target="salida">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#52525B;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="salida" target="decision">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

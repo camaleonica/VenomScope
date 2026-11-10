@@ -82,9 +82,9 @@ def _limites(motor: Motor):
          "información, así que la posición de un punto es orientativa. El puntaje y las líneas "
          "sí salen del cálculo completo."),
         ("Péptidos cortos",
-         "En los <b>péptidos cortos</b> no pudimos comprobar qué tan confiable es: los que "
-         "tenemos son casi todos de una misma familia fácil, así que no sabemos cómo se porta "
-         "con uno de otra."),
+         "En los <b>péptidos cortos</b> no pudimos comprobar qué tan confiable es: los del "
+         "catálogo salen de solo <b>cuatro familias</b>, y siete de cada diez son parientes "
+         "entre sí, así que no sabemos cómo se porta con uno de una familia distinta."),
         ("Ayuda, no reemplaza",
          "Sirve para <b>ordenar y priorizar</b>. No reemplaza el análisis de laboratorio."),
     ]
