@@ -5,9 +5,12 @@ aspecto vive en `estilo.css`. Para cambiar un color o un tamaño se toca ese
 archivo y nada más.
 
 Las fotos van en `assets/img/` con el nombre exacto de FOTOS. Para poner una
-foto de verdad alcanza con reemplazar el archivo de muestra por otro con el
-mismo nombre: no hay que tocar código. Se muestran siempre en blanco y negro
-(filtro en el CSS), aunque el archivo sea a color.
+foto de verdad alcanza con reemplazar el archivo por otro con el mismo nombre:
+no hay que tocar código.
+
+Van a color, apenas apagadas. Si alguna vez se quieren todas en blanco y negro,
+se cambia `--foto-color` en estilo.css (1 es color pleno, 0 es gris) y cambian
+las cinco de una vez.
 """
 import base64
 import html

@@ -226,12 +226,14 @@ code { font-family: var(--mono); background: transparent; color: var(--tinta);
                   color: var(--tinta-3); }
 
 /* ---------------------------------------------------------------- fotos -- */
-/* Siempre en blanco y negro, y un punto más apagadas para que no griten sobre
- * el fondo oscuro. */
+/* Un punto más apagadas, para que no griten sobre el fondo oscuro.
+ * --foto-color va de 0 (blanco y negro) a 1 (color pleno): se cambia acá y
+ * afecta a las cinco fotos de una vez. */
+:root { --foto-color: 1; }
 .vs-foto { margin: 0; width: 100%; overflow: hidden; background: var(--fondo-2); }
 .vs-foto img {
   width: 100%; height: 100%; object-fit: cover; display: block;
-  filter: grayscale(1) contrast(1.05) brightness(0.88);
+  filter: saturate(var(--foto-color)) contrast(1.05) brightness(0.9);
 }
 .vs-foto-falta {
   height: 100%;
