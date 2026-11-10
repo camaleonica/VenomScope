@@ -23,8 +23,8 @@ def app():
 
 
 def test_la_app_abre_con_sus_cuatro_pestanas(app):
-    assert [t.label for t in app.tabs] == ["La campaña", "Una secuencia",
-                                           "Qué es esto", "Cómo leer esto"]
+    assert [t.label for t in app.tabs] == ["Qué es esto", "Cómo leer esto",
+                                           "Una secuencia", "Una campaña entera"]
     assert not app.error
 
 
@@ -37,7 +37,7 @@ def test_la_app_abre_con_la_campana_de_demostracion_ya_analizada(app):
 
 
 def test_la_introduccion_explica_sin_suponer_biologia(app):
-    intro = " ".join(m.value for m in app.tabs[2].markdown)
+    intro = " ".join(m.value for m in app.tabs[0].markdown)
     for idea in ["aminoácidos", "familia", "captopril", "ESM-2", "vecinos", "reglas"]:
         assert idea in intro, f"La introducción no menciona: {idea}"
 

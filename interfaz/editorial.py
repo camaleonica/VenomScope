@@ -108,6 +108,10 @@ def bloque(contenido: str):
     st.markdown(re.sub(r"\n\s*", " ", contenido.strip()), unsafe_allow_html=True)
 
 
-def seccion(nombre: str, oscura: bool = False):
-    """Una sección a todo el ancho, blanca o negra. Se usa con `with`."""
-    return st.container(key=f"{'negra' if oscura else 'blanca'}_{nombre}")
+def seccion(nombre: str, alterna: bool = False):
+    """Una sección a todo el ancho. Se usa con `with`.
+
+    Toda la app es oscura: el ritmo lo dan dos tonos de fondo muy parecidos y un
+    filete entre medio. `alterna=True` es el tono un escalón más claro.
+    """
+    return st.container(key=f"{'tono2' if alterna else 'tono1'}_{nombre}")

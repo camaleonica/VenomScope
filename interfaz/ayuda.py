@@ -48,7 +48,7 @@ def _marcar_de_mas():
         ("Novedad perdida",
          "El candidato que no se parecía a nada queda enterrado en una planilla."),
     ]
-    with seccion("ayuda_errores", oscura=True):
+    with seccion("ayuda_errores", alterna=True):
         bloque(f"""
         {cabeza(2, TOTAL, "Los errores", "Por qué con[v]iene|marcar de más")}
         <div class="vs-con-foto" style="grid-template-columns:minmax(0,5fr) minmax(0,7fr)">

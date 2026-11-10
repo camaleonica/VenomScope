@@ -31,15 +31,15 @@ except FileNotFoundError:
     st.stop()
 
 barra_lateral(motor)
-# La campaña va primera: es el caso de uso real del laboratorio, y abre con la
-# de demostración ya analizada. Una secuencia suelta es el detalle, no la puerta.
-tab_campana, tab_una, tab_intro, tab_ayuda = st.tabs(
-    ["La campaña", "Una secuencia", "Qué es esto", "Cómo leer esto"])
-with tab_campana:
-    campana.mostrar(motor)
-with tab_una:
-    una.mostrar(motor)
+# Las solapas son los capítulos y se leen en orden: qué es, cómo se lee, una
+# secuencia y, al final, la demostración de verdad, que es la campaña entera.
+tab_intro, tab_ayuda, tab_una, tab_campana = st.tabs(
+    ["Qué es esto", "Cómo leer esto", "Una secuencia", "Una campaña entera"])
 with tab_intro:
     intro.mostrar(motor)
 with tab_ayuda:
     ayuda.mostrar(motor)
+with tab_una:
+    una.mostrar(motor)
+with tab_campana:
+    campana.mostrar(motor)

@@ -75,7 +75,7 @@ def _problema():
 
 
 def _biologia():
-    with seccion("biologia", oscura=True):
+    with seccion("biologia", alterna=True):
         bloque(f"""
         {_cabeza(2, "Biología", "La bio[l]ogía|en un mi[n]uto")}
         <div class="vs-con-foto">
@@ -133,7 +133,7 @@ def _como_funciona(motor: Motor):
 
 
 def _resultados(m: dict):
-    with seccion("resultados", oscura=True):
+    with seccion("resultados", alterna=True):
         cifras = [
             (f"{m['macro_f1_esm2'] * 100:.0f}", "/100", "Familia, examen normal",
              f"Sin IA: {m['macro_f1_composicion'] * 100:.0f}."),

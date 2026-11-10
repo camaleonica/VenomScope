@@ -1,19 +1,43 @@
-/* VenomScope, diseño editorial.
+/* VenomScope, diseño editorial oscuro.
  *
- * Todo el aspecto de la app está acá. Paleta: negro y blanco puros y un único
- * acento, el azul de resaltador. Las tipografías se sirven desde static/fuentes
- * (ver .streamlit/config.toml), así la app no depende de internet.
+ * Todo el aspecto de la app está acá.
+ *
+ * La paleta sale del mapa 3D, así la app entera y el gráfico son la misma cosa:
+ * fondo casi negro, texto claro y tres acentos que SIEMPRE significan lo mismo.
+ *
+ *     naranja  prioridad alta  · novedosa   (el punto de "tu secuencia" en el mapa)
+ *     ámbar    prioridad media · algo distinta
+ *     azul     prioridad baja  · parecida a algo conocido
+ *     aqua     los vecinos más parecidos
+ *
+ * Los tres están validados para que se distingan con daltonismo, y ninguno dice
+ * algo solo: al lado siempre está la palabra escrita.
+ *
+ * El celeste pálido es otra cosa: es el resaltador, y va únicamente detrás de
+ * frases cortas, como marcar un libro.
+ *
+ * Las tipografías se sirven desde static/fuentes (ver .streamlit/config.toml),
+ * así la app no depende de internet.
  */
 
 :root {
-  --negro: #000000;
-  --blanco: #ffffff;
-  --acento: #c7ddf2;           /* resaltador: solo detrás de frases cortas */
-  --linea-clara: #e8e8e8;      /* grilla sobre blanco */
-  --linea-oscura: #1a1a1a;     /* grilla sobre negro */
-  --texto-chico: 12px;         /* el texto que se lee: subirlo acá si el proyector no ayuda */
-  --gris-texto: #2b2b2b;       /* texto chico sobre blanco */
-  --gris-texto-oscuro: #c9c9c9;/* texto chico sobre negro */
+  --fondo: #09090b;            /* el fondo de todo, igual que la superficie del mapa */
+  --fondo-2: #121216;          /* las secciones alternas: un escalón más claro */
+  --tinta: #f4f4f5;            /* títulos y texto fuerte */
+  --tinta-2: #c4c4cc;          /* el texto corrido */
+  --tinta-3: #8b8b94;          /* rótulos, números de eje, lo secundario */
+  --linea: #27272a;            /* bordes y filetes */
+  --linea-2: #3f3f46;          /* bordes de algo que se puede tocar */
+  --grilla: #161619;           /* la grilla del fondo */
+
+  --alta: #d95926;             /* naranja: prioridad alta, novedosa */
+  --media: #d9a21c;            /* ámbar:   prioridad media, algo distinta */
+  --baja: #3987e5;             /* azul:    prioridad baja, parecida a algo conocido */
+  --aqua: #199e70;             /* los vecinos del mapa */
+  --acento: #c7ddf2;           /* el resaltador, solo detrás de frases cortas */
+
+  --texto-chico: 13.5px;       /* el texto que se lee: subirlo acá si el proyector no ayuda */
+  --texto-rotulo: 11.5px;      /* los rótulos en monoespaciada */
   --margen: 6vw;               /* margen lateral de toda la página */
   --modulo: 120px;             /* alto de cada fila de la grilla de fondo */
   --grotesca: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
@@ -22,16 +46,16 @@
 }
 
 /* ------------------------------------------------------------- la grilla -- */
-/* Líneas de 1px cruzando el fondo, fijas a la ventana: doce columnas y filas
- * de un módulo. Las secciones negras dibujan la misma grilla en su color, y
- * como las dos están fijas a la ventana, las líneas coinciden. */
+/* Líneas de 1px cruzando el fondo, fijas a la ventana: doce columnas y filas de
+ * un módulo. Como están fijas, las líneas siguen alineadas al cambiar de sección. */
 [data-testid="stAppViewContainer"] {
-  background-color: var(--blanco);
+  background-color: var(--fondo);
   background-image:
-    linear-gradient(to right, var(--linea-clara) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--linea-clara) 1px, transparent 1px);
+    linear-gradient(to right, var(--grilla) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grilla) 1px, transparent 1px);
   background-size: calc(100vw / 12) var(--modulo);
   background-attachment: fixed;
+  color: var(--tinta-2);
 }
 [data-testid="stHeader"] { background: transparent; }
 [data-testid="stMain"] { overflow-x: hidden; }
@@ -39,29 +63,28 @@
   padding: 24px var(--margen) 0 var(--margen);
   max-width: none;
 }
+h1, h2, h3, h4, h5, h6, strong, b { color: var(--tinta); }
 
 /* --------------------------------------------------------- las secciones -- */
-/* A todo el ancho: se comen el margen de la página y lo devuelven como relleno. */
-[class*="st-key-blanca_"], [class*="st-key-negra_"] {
+/* A todo el ancho: se comen el margen de la página y lo devuelven como relleno.
+ * El ritmo ya no es blanco contra negro, sino dos tonos de oscuro separados por
+ * un filete: más sobrio y mucho menos cansador en una pantalla grande. */
+[class*="st-key-tono1_"], [class*="st-key-tono2_"] {
   box-sizing: border-box;
   width: calc(100% + 2 * var(--margen)) !important;
   max-width: none !important;
   margin-left: calc(-1 * var(--margen)) !important;
-  padding: 96px var(--margen) 112px var(--margen) !important;
+  padding: 88px var(--margen) 104px var(--margen) !important;
+  border-top: 1px solid var(--linea);
 }
-[class*="st-key-negra_"] {
-  background-color: var(--negro);
+[class*="st-key-tono2_"] {
+  background-color: var(--fondo-2);
   background-image:
-    linear-gradient(to right, var(--linea-oscura) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--linea-oscura) 1px, transparent 1px);
+    linear-gradient(to right, #1c1c21 1px, transparent 1px),
+    linear-gradient(to bottom, #1c1c21 1px, transparent 1px);
   background-size: calc(100vw / 12) var(--modulo);
   background-attachment: fixed;
-  color: var(--blanco);
 }
-[class*="st-key-negra_"] p,
-[class*="st-key-negra_"] li,
-[class*="st-key-negra_"] summary,
-[class*="st-key-negra_"] [data-testid="stMarkdownContainer"] { color: var(--blanco); }
 
 /* ------------------------------------------------------------ tipografía -- */
 .vs-titulo {
@@ -71,7 +94,7 @@
   line-height: 0.9;
   letter-spacing: -0.045em;
   margin: 0;
-  color: inherit;
+  color: var(--tinta);
 }
 .vs-titulo--portada { font-size: clamp(72px, 15vw, 248px); letter-spacing: -0.06em; }
 /* Las letras de píxeles: Silkscreen es más ancha y más alta que la grotesca,
@@ -86,35 +109,34 @@
 .vs-chico, .vs-chico p {
   font-family: var(--grotesca);
   font-size: var(--texto-chico) !important;
-  line-height: 1.5;
-  color: var(--gris-texto);
-  max-width: 34ch;
+  line-height: 1.55;
+  color: var(--tinta-2);
+  max-width: 38ch;
   margin: 0 0 1em 0;
 }
-[class*="st-key-negra_"] .vs-chico,
-[class*="st-key-negra_"] .vs-chico p { color: var(--gris-texto-oscuro); }
-.vs-chico b { color: var(--negro); font-weight: 600; }
-[class*="st-key-negra_"] .vs-chico b { color: var(--blanco); }
+.vs-chico b { color: var(--tinta); font-weight: 600; }
+.vs-chico i { color: var(--tinta-2); }
 
 .vs-mono, .vs-n, .vs-marcador, .vs-etiqueta {
   font-family: var(--mono);
-  font-size: 11px !important;
+  font-size: var(--texto-rotulo) !important;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  color: var(--tinta-3);
 }
-.vs-n { display: inline-block; min-width: 2.6em; color: inherit; }
+.vs-n { display: inline-block; min-width: 2.6em; }
 
-/* El resaltador: fondo azul pálido detrás de la frase, texto siempre negro. */
+/* El resaltador: celeste pálido detrás de la frase, texto siempre oscuro. */
 mark.vs-marca {
   background: var(--acento);
-  color: var(--negro) !important;
+  color: var(--fondo) !important;
   padding: 0.05em 0.25em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
 
-code { font-family: var(--mono); background: transparent; color: inherit;
-       border: 1px solid currentColor; padding: 0 0.3em; font-size: 0.95em; }
+code { font-family: var(--mono); background: transparent; color: var(--tinta);
+       border: 1px solid var(--linea-2); padding: 0 0.3em; font-size: 0.95em; }
 
 /* ----------------------------------------------------- encabezado de sección */
 .vs-cabeza {
@@ -122,7 +144,7 @@ code { font-family: var(--mono); background: transparent; color: inherit;
   justify-content: space-between;
   align-items: flex-start;
   gap: 32px;
-  margin-bottom: 72px;
+  margin-bottom: 64px;
 }
 .vs-marcador {
   display: flex;
@@ -138,10 +160,11 @@ code { font-family: var(--mono); background: transparent; color: inherit;
   display: flex;
   justify-content: space-between;
   gap: 24px;
-  border-bottom: 1px solid var(--negro);
+  border-bottom: 1px solid var(--linea);
   padding-bottom: 10px;
   margin-bottom: 8px;
 }
+.vs-cabecera span:first-child { color: var(--tinta); }
 
 /* -------------------------------------------------------------- maquetas -- */
 .vs-portada {
@@ -164,21 +187,21 @@ code { font-family: var(--mono); background: transparent; color: inherit;
   display: grid;
   grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
   gap: 0;
-  border-top: 1px solid currentColor;
+  border-top: 1px solid var(--linea-2);
 }
 .vs-columnas > div {
   padding: 16px 24px 8px 0;
-  border-right: 1px solid var(--linea-clara);
+  border-right: 1px solid var(--linea);
   margin-right: 24px;
 }
-[class*="st-key-negra_"] .vs-columnas > div { border-right-color: var(--linea-oscura); }
 .vs-columnas > div:last-child { border-right: none; margin-right: 0; }
 .vs-columnas .vs-n { margin-bottom: 28px; display: block; }
 .vs-item-titulo {
   font-family: var(--grotesca);
   font-weight: 600;
-  font-size: 15px !important;
+  font-size: 16px !important;
   letter-spacing: -0.01em;
+  color: var(--tinta);
   margin: 0 0 10px 0;
 }
 
@@ -196,32 +219,36 @@ code { font-family: var(--mono); background: transparent; color: inherit;
   font-size: clamp(56px, 8vw, 128px) !important;
   line-height: 0.9;
   letter-spacing: -0.06em;
+  color: var(--tinta);
   margin: 0 0 20px 0;
 }
-.vs-cifra small { font-size: 0.22em; letter-spacing: 0; margin-left: 0.4em; }
+.vs-cifra small { font-size: 0.22em; letter-spacing: 0; margin-left: 0.4em;
+                  color: var(--tinta-3); }
 
 /* ---------------------------------------------------------------- fotos -- */
-.vs-foto { margin: 0; width: 100%; overflow: hidden; background: var(--blanco); }
+/* Siempre en blanco y negro, y un punto más apagadas para que no griten sobre
+ * el fondo oscuro. */
+.vs-foto { margin: 0; width: 100%; overflow: hidden; background: var(--fondo-2); }
 .vs-foto img {
   width: 100%; height: 100%; object-fit: cover; display: block;
-  filter: grayscale(1) contrast(1.05);   /* nunca a color, venga como venga el archivo */
+  filter: grayscale(1) contrast(1.05) brightness(0.88);
 }
 .vs-foto-falta {
   height: 100%;
   display: flex; align-items: center; justify-content: center; text-align: center;
-  border: 1px solid var(--linea-clara);
+  border: 1px solid var(--linea);
   font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; line-height: 1.8;
-  text-transform: uppercase; color: #9a9a9a;
+  text-transform: uppercase; color: var(--tinta-3);
   background: transparent;
 }
-[class*="st-key-negra_"] .vs-foto-falta { border-color: #333; color: #6f6f6f; }
 
 /* ----------------------------------------------------------- pestañas -- */
-/* Numeradas 01, 02, 03 en monoespaciada; la activa, con resaltador. */
+/* Numeradas 01, 02, 03 en monoespaciada: son los capítulos, y se leen en orden.
+ * La activa va con el resaltador. */
 [role="tablist"] {
   counter-reset: pestana;
   gap: 0;
-  border-bottom: 1px solid var(--negro);
+  border-bottom: 1px solid var(--linea);
   box-shadow: none;
 }
 [data-testid="stTab"] {
@@ -234,34 +261,45 @@ code { font-family: var(--mono); background: transparent; color: inherit;
   counter-increment: pestana;
   content: counter(pestana, decimal-leading-zero);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--texto-rotulo);
   margin-right: 10px;
-  color: #8a8a8a;
+  color: var(--tinta-3);
 }
 [data-testid="stTab"] p {
   font-family: var(--mono);
-  font-size: 11px !important;
+  font-size: var(--texto-rotulo) !important;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--negro);
+  color: var(--tinta-2);
 }
-[data-testid="stTab"][aria-selected="true"] p { background: var(--acento); padding: 0 4px; }
+[data-testid="stTab"]:hover p { color: var(--tinta); }
+[data-testid="stTab"][aria-selected="true"] p {
+  background: var(--acento); color: var(--fondo); padding: 0 5px;
+}
 [data-testid="stTab"]::after, [role="tablist"]::after { display: none !important; }
 
 /* --------------------------------------------- desplegables y barra lateral */
 [data-testid="stExpander"] details {
   border: none;
-  border-top: 1px solid currentColor;
+  border-top: 1px solid var(--linea);
   border-radius: 0;
   background: transparent;
 }
 [data-testid="stExpander"] summary p {
-  font-family: var(--mono); font-size: 11px !important; text-transform: uppercase; letter-spacing: 0.06em;
+  font-family: var(--mono); font-size: var(--texto-rotulo) !important;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--tinta-2);
 }
 [data-testid="stExpander"] [data-testid="stMarkdownContainer"] li,
-[data-testid="stExpander"] [data-testid="stMarkdownContainer"] p { font-size: 13px; max-width: 80ch; }
+[data-testid="stExpander"] [data-testid="stMarkdownContainer"] p {
+  font-size: 14px; line-height: 1.6; max-width: 80ch; color: var(--tinta-2);
+}
 
-[data-testid="stSidebar"] { background: var(--blanco); border-right: 1px solid var(--negro); }
+[data-testid="stSidebar"] { background: var(--fondo-2); border-right: 1px solid var(--linea); }
+[data-testid="stSidebar"] h3 { font-family: var(--mono); font-size: 13px;
+                               text-transform: uppercase; letter-spacing: 0.06em; }
+[data-testid="stSidebar"] p, [data-testid="stSidebar"] td, [data-testid="stSidebar"] th {
+  font-size: 13.5px; color: var(--tinta-2);
+}
 
 /* ------------------------------------------------- pantallas de trabajo -- */
 /* El control de sensibilidad va en una franja angosta, siempre debajo o al lado
@@ -269,241 +307,256 @@ code { font-family: var(--mono); background: transparent; color: inherit;
 [class*="_sensibilidad"] {
   padding-top: 28px !important;
   padding-bottom: 28px !important;
-  border-top: 1px solid var(--negro);
 }
 [class*="st-key-franja_umbral_"] { margin-top: 8px; }
-/* Dos secciones blancas seguidas se separan con una línea, no con color. */
-[class*="st-key-blanca_resultado"], [class*="st-key-blanca_campana_tabla"] {
-  border-top: 1px solid var(--negro);
-}
 
 /* Subtítulo chico y numerado dentro de una sección. */
 .vs-sub {
   font-family: var(--mono);
-  font-size: 11px !important;
+  font-size: var(--texto-rotulo) !important;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  border-top: 1px solid currentColor;
+  color: var(--tinta-3);
+  border-top: 1px solid var(--linea);
   padding-top: 12px;
   margin: 56px 0 16px 0;
 }
+.vs-sub .vs-n { color: var(--tinta-3); }
 
 /* Qué muestra se está viendo, justo debajo del título de la sección. */
-.vs-muestra { margin: -48px 0 0 0; color: var(--gris-texto); }
-.vs-muestra b { color: var(--negro); }
+.vs-muestra { margin: -40px 0 0 0; color: var(--tinta-3); }
+.vs-muestra b { color: var(--tinta); }
 
-/* La prioridad, en letras grandes: es lo primero que hay que ver. */
+/* La prioridad, en letras grandes: es lo primero que hay que ver. Acá el color
+ * sí está permitido a pleno, porque es la respuesta. */
 .vs-prioridad {
   font-family: var(--grotesca);
   font-weight: 500;
   font-size: clamp(56px, 7vw, 112px) !important;
   line-height: 0.9;
   letter-spacing: -0.05em;
+  color: var(--c, var(--tinta));
   margin: 8px 0 0 0;
 }
-.vs-prioridad--baja { color: #8a8a8a; }
 
 /* La frase del veredicto: más grande que el texto chico, en una columna corta. */
 [class*="st-key-veredicto_"] p {
   font-size: clamp(20px, 2vw, 28px) !important;
-  line-height: 1.15;
+  line-height: 1.2;
   letter-spacing: -0.02em;
-  max-width: 34ch;
-  margin: 48px 0 16px 0;
+  color: var(--tinta-2);
+  max-width: 36ch;
+  margin: 40px 0 16px 0;
 }
+[class*="st-key-veredicto_"] strong { color: var(--tinta); }
 
 /* Las métricas de Streamlit: etiqueta en monoespaciada chica, número grande. */
 [data-testid="stMetricLabel"] p,
 [data-testid="stWidgetLabel"] p,
 [data-testid="stWidgetLabel"] label {
   font-family: var(--mono);
-  font-size: 11px !important;
+  font-size: var(--texto-rotulo) !important;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  color: var(--tinta-3);
 }
 [data-testid="stMetricValue"] {
   font-family: var(--mono);
   font-size: clamp(40px, 4.4vw, 72px) !important;
   letter-spacing: -0.05em;
   line-height: 1;
+  color: var(--tinta);
 }
 [data-testid="stMetricDelta"] {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--texto-rotulo);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   background: transparent !important;
-  color: var(--negro) !important;
+  color: var(--tinta-3) !important;
   padding: 0;
 }
 
-/* Botones: negros y cuadrados; al pasar el mouse, el resaltador. */
+/* Botones: cuadrados y de contorno; al pasar el mouse, el resaltador. */
 [data-testid^="stBaseButton"] {
   font-family: var(--mono);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  border: 1px solid var(--negro) !important;
+  color: var(--tinta);
+  background: transparent;
+  border: 1px solid var(--linea-2) !important;
   border-radius: 0 !important;
   padding: 10px 22px;
 }
-[data-testid="stBaseButton-primary"] { background: var(--negro); color: var(--blanco); }
+[data-testid="stBaseButton-primary"] {
+  background: var(--tinta); color: var(--fondo); border-color: var(--tinta) !important;
+}
 [data-testid="stBaseButton-primary"]:hover:not(:disabled),
 [data-testid="stBaseButton-secondary"]:hover:not(:disabled) {
-  background: var(--acento); color: var(--negro);
+  background: var(--acento); color: var(--fondo); border-color: var(--acento) !important;
 }
 [data-testid^="stBaseButton"] p { font-size: 12px !important; }
 [data-testid^="stBaseButton"]:disabled { opacity: 0.35; }
 
-/* Campos de texto: la secuencia se escribe en monoespaciada, como en el laboratorio. */
+/* Campos: la secuencia se escribe en monoespaciada, como en el laboratorio. */
 [data-testid="stTextArea"] textarea { font-family: var(--mono); font-size: 13px; }
-[data-testid="stTextArea"] [data-baseweb="textarea"] { border: 1px solid var(--negro); border-radius: 0; }
-[data-testid="stFileUploaderDropzone"] { background: transparent; border: 1px dashed var(--negro); border-radius: 0; }
+[data-testid="stTextArea"] [data-baseweb="textarea"],
+[data-baseweb="select"] > div {
+  border: 1px solid var(--linea-2); border-radius: 0;
+}
+[data-testid="stFileUploaderDropzone"] {
+  background: transparent; border: 1px dashed var(--linea-2); border-radius: 0;
+}
 
 /* Avisos: sin fondos de color, una línea gruesa a la izquierda y nada más. */
 [data-testid="stAlertContainer"] {
   background: transparent !important;
-  border: 1px solid var(--negro);
-  border-left-width: 6px;
+  border: 1px solid var(--linea);
+  border-left: 6px solid var(--tinta-3);
   border-radius: 0;
-  color: var(--negro);
+  color: var(--tinta-2);
 }
-[data-testid="stAlertContentError"] { border-color: var(--negro); }
-[data-testid="stAlertContainer"] p { font-size: 13px; }
+[data-testid="stAlertContentError"] { border-left-color: var(--alta); }
+[data-testid="stAlertContentWarning"] { border-left-color: var(--media); }
+[data-testid="stAlertContentInfo"] { border-left-color: var(--baja); }
+[data-testid="stAlertContainer"] p { font-size: 14px; }
 
-[data-testid="stCaptionContainer"] { font-size: var(--texto-chico); color: var(--gris-texto); max-width: 90ch; }
-[class*="st-key-negra_"] [data-testid="stCaptionContainer"],
-[class*="st-key-negra_"] [data-testid="stCaptionContainer"] p { color: var(--gris-texto-oscuro); }
-hr { border-color: var(--negro) !important; }
+[data-testid="stCaptionContainer"] {
+  font-size: var(--texto-chico); color: var(--tinta-3); max-width: 90ch;
+}
+hr { border-color: var(--linea) !important; }
 
-/* El mapa 3D: el bloque negro toma el mismo fondo del gráfico, así no se ve el recuadro. */
-[class*="st-key-negra_mapa"] { background-color: #09090b; }
-
-/* La barra lateral: monoespaciada chica, como las esquinas de la página. */
-[data-testid="stSidebar"] h3 { font-family: var(--mono); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; }
-[data-testid="stSidebar"] p, [data-testid="stSidebar"] td, [data-testid="stSidebar"] th { font-size: 13px; }
+/* El mapa 3D ya trae el fondo de la paleta: la sección se le acopla sin costura. */
+[class*="st-key-tono2_mapa"] { background-color: var(--fondo); }
 
 /* ------------------------------------------------------------- celular -- */
 @media (max-width: 760px) {
   :root { --margen: 16px; --modulo: 80px; }
-  [data-testid="stMainBlockContainer"] { padding-top: 56px; }  /* deja lugar al botón de la barra lateral */
+  [data-testid="stMainBlockContainer"] { padding-top: 56px; }  /* lugar para el botón lateral */
   .vs-portada, .vs-con-foto { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .vs-columnas { grid-template-columns: minmax(0, 1fr); }
-  .vs-columnas > div { border-right: none; margin-right: 0; border-bottom: 1px solid var(--linea-clara); }
+  .vs-columnas > div { border-right: none; margin-right: 0;
+                       border-bottom: 1px solid var(--linea); }
   .vs-cabeza { flex-direction: column-reverse; gap: 16px; margin-bottom: 40px; }
   .vs-marcador { align-items: flex-start; }
   .vs-cabecera span:nth-child(2) { display: none; }
-  [class*="st-key-blanca_"], [class*="st-key-negra_"] { padding: 56px var(--margen) 64px var(--margen); }
+  [class*="st-key-tono1_"], [class*="st-key-tono2_"] {
+    padding: 56px var(--margen) 64px var(--margen) !important;
+  }
 }
 
 /* ===========================================================================
- * LAS PIEZAS DE interfaz/componentes.py, VESTIDAS DE EDITORIAL
+ * LAS PIEZAS DE interfaz/componentes.py
  *
- * El HTML y los SVG son los de componentes.py, sin tocar. Acá se reemplaza su
- * hoja original (interfaz/estilo.py, pensada para la app oscura) por una en el
- * lenguaje de esta: blanco y negro, un acento, sin esquinas redondeadas.
- *
- * La prioridad se distingue por CONTRASTE, no por matiz: cuanto más urgente,
- * más oscuro. Se lee igual en un proyector malo y en blanco y negro. El color
- * nunca dice algo solo: al lado siempre está la palabra.
+ * El HTML y los SVG son los de componentes.py, sin tocar: acá solo se las viste.
+ * Los tres acentos significan siempre lo mismo y son los del mapa 3D, así que
+ * una muestra naranja en la tabla es el mismo naranja del punto en el gráfico.
  * ========================================================================= */
 
-.vs-n-alta  { --c: var(--negro); --ct: var(--negro); --cf: var(--acento); }
-.vs-n-media { --c: #6b6b6b;      --ct: #4a4a4a;      --cf: #f0f0f0; }
-.vs-n-baja  { --c: #b8b8b8;      --ct: #8a8a8a;      --cf: #f8f8f8; }
-.vs-n-nula  { --c: #dcdcdc;      --ct: #9a9a9a;      --cf: #fcfcfc; }
+.vs-n-alta  { --c: var(--alta);  --ct: #f2906a; --cf: rgba(217, 89, 38, .16); }
+.vs-n-media { --c: var(--media); --ct: #ecc462; --cf: rgba(217, 162, 28, .16); }
+.vs-n-baja  { --c: var(--baja);  --ct: #82b3f1; --cf: rgba(57, 135, 229, .16); }
+.vs-n-nula  { --c: #52525b;      --ct: var(--tinta-3); --cf: rgba(113, 113, 122, .14); }
 
 /* --------------------------------------------------- la escala de novedad -- */
 .vs-escala { margin: 24px 0 28px; }
-.vs-escala-tit { font-family: var(--mono); font-size: 11px; letter-spacing: .06em;
-                 text-transform: uppercase; margin-bottom: 26px; }
+.vs-escala-tit { font-family: var(--mono); font-size: var(--texto-rotulo);
+                 letter-spacing: .06em; text-transform: uppercase;
+                 color: var(--tinta-3); margin-bottom: 26px; }
 .vs-escala-cuerpo { padding: 22px 14px 0 0; }   /* aire a la derecha: el 100 no se corta */
 .vs-pista { position: relative; display: flex; gap: 2px; height: 14px; }
-.vs-zona { background: var(--c); opacity: .3; }
+/* Las zonas que no son la de la secuencia van muy apagadas: la más ancha es
+ * 'parecida a algo conocido', que es justamente la que menos importa. */
+.vs-zona { background: var(--c); opacity: .22; }
 .vs-zona.vs-zona-activa { opacity: 1; }
 .vs-pista .vs-marca { position: absolute; left: var(--p); top: -8px; bottom: -8px; width: 2px;
-                      margin-left: -1px; background: var(--negro); }
-.vs-pista .vs-marca-etq { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
-                          margin-bottom: 6px; padding: 1px 6px; background: var(--negro);
-                          color: var(--blanco); font: 400 12px var(--mono); }
+                      margin-left: -1px; background: var(--tinta); }
+.vs-pista .vs-marca-etq { position: absolute; bottom: 100%; left: 50%;
+                          transform: translateX(-50%); margin-bottom: 6px; padding: 1px 6px;
+                          background: var(--tinta); color: var(--fondo);
+                          font: 400 12px var(--mono); }
 .vs-nombres, .vs-numeros { display: flex; gap: 2px; }
-.vs-nombres span { padding-top: 10px; font-size: 12px; color: var(--gris-texto);
-                   white-space: nowrap; }
-.vs-nombres span.vs-nombre-activo { font-weight: 600; color: var(--negro); }
-.vs-numeros span { padding-top: 4px; font: 400 11px var(--mono); color: #9a9a9a; }
+.vs-nombres span { padding-top: 10px; font-size: var(--texto-chico);
+                   color: var(--tinta-3); white-space: nowrap; }
+.vs-nombres span.vs-nombre-activo { font-weight: 600; color: var(--ct); }
+.vs-numeros span { padding-top: 4px; font: 400 11px var(--mono); color: var(--tinta-3); }
 .vs-numeros span.vs-fin { display: flex; justify-content: space-between; gap: 8px; }
 .vs-fin em { font-style: normal; }
 
 /* ------------------------------------------------------------ el veredicto -- */
-.vs-veredicto { max-width: 68ch; margin: 8px 0 24px; padding: 2px 0 2px 16px;
-                border-left: 3px solid var(--c); font-size: 15px; line-height: 1.5; }
-.vs-veredicto strong { font-weight: 600; }
+.vs-veredicto { max-width: 72ch; margin: 8px 0 24px; padding: 2px 0 2px 16px;
+                border-left: 3px solid var(--c); font-size: 16px; line-height: 1.55;
+                color: var(--tinta-2); }
+.vs-veredicto strong { font-weight: 600; color: var(--tinta); }
 
 /* ------------------------------------------ la banda de proporciones -------- */
 .vs-dist { margin: 0 0 16px; }
 .vs-dist-barra { display: flex; gap: 2px; height: 10px; }
 .vs-dist-barra span { min-width: 6px; background: var(--c); }
 .vs-dist-ley { display: flex; flex-wrap: wrap; gap: 6px 28px; margin-top: 12px;
-               font-family: var(--mono); font-size: 11px; letter-spacing: .04em;
-               text-transform: uppercase; color: var(--gris-texto); }
+               font-family: var(--mono); font-size: var(--texto-rotulo);
+               letter-spacing: .04em; text-transform: uppercase; color: var(--tinta-3); }
 .vs-ley i { display: inline-block; width: 10px; height: 10px; margin-right: 7px;
-            background: var(--c, #b8b8b8); }
-.vs-ley i.vs-ley-plan { background: var(--negro); border-radius: 50%; }
-.vs-ley i.vs-ley-banda { background: #ededed; border: 1px solid var(--linea-clara); }
-.vs-ley b { font-family: var(--mono); font-weight: 600; color: var(--negro); }
+            background: var(--c, #52525b); }
+.vs-ley i.vs-ley-plan { background: var(--tinta); border-radius: 50%; }
+.vs-ley i.vs-ley-banda { background: rgba(255, 255, 255, .09); }
+.vs-ley b { font-family: var(--mono); font-weight: 600; color: var(--tinta); }
 
 /* -------------------------------------------------- las tarjetas destacadas -- */
 .vs-tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-               gap: 0; margin: 0 0 24px; border-top: 1px solid var(--negro); }
+               gap: 0; margin: 0 0 24px; border-top: 1px solid var(--linea); }
 .vs-tarjeta { display: flex; flex-direction: column; gap: 6px; min-width: 0;
               padding: 16px 24px 16px 0; margin-right: 24px;
-              border-right: 1px solid var(--linea-clara); border-top: 4px solid var(--c);
+              border-right: 1px solid var(--linea); border-top: 4px solid var(--c);
               margin-top: -1px; }
 .vs-tarjeta:last-child { border-right: none; margin-right: 0; }
-.vs-tarjeta-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.vs-tarjeta-cab { display: flex; justify-content: space-between; align-items: baseline;
+                  gap: 10px; }
 .vs-tarjeta-id { overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-                 font: 400 13px var(--mono); }
-.vs-nivel { flex: none; font-family: var(--mono); font-size: 11px; text-transform: uppercase;
-            letter-spacing: .06em; color: var(--ct); }
-.vs-tarjeta-fam { font-size: 15px; font-weight: 600; line-height: 1.25; letter-spacing: -.01em; }
-.vs-tarjeta-sub { font-size: var(--texto-chico); line-height: 1.45; color: var(--gris-texto); }
+                 font: 400 13px var(--mono); color: var(--tinta); }
+.vs-nivel { flex: none; font-family: var(--mono); font-size: var(--texto-rotulo);
+            text-transform: uppercase; letter-spacing: .06em; color: var(--ct); }
+.vs-tarjeta-fam { font-size: 16px; font-weight: 600; line-height: 1.25;
+                  letter-spacing: -.01em; color: var(--tinta); }
+.vs-tarjeta-sub { font-size: var(--texto-chico); line-height: 1.45; color: var(--tinta-3); }
 .vs-mini { display: flex; align-items: center; gap: 10px; margin-top: 4px;
            font-family: var(--mono); font-size: 10px; text-transform: uppercase;
-           letter-spacing: .06em; color: var(--gris-texto); }
-.vs-mini-barra { flex: 1; height: 4px; overflow: hidden; background: var(--linea-clara); }
+           letter-spacing: .06em; color: var(--tinta-3); }
+.vs-mini-barra { flex: 1; height: 4px; overflow: hidden; background: var(--linea); }
 .vs-mini-barra i { display: block; height: 100%; background: var(--c); }
-.vs-mini b { font: 400 13px var(--mono); color: var(--negro); }
+.vs-mini b { font: 400 13px var(--mono); color: var(--tinta); }
 
-/* ------------------------------------------------- el arbol y la curva ------ */
+/* ------------------------------------------------- el árbol y la curva ------ */
 .vs-arbol, .vs-curva { margin: 16px 0; padding: 0; overflow-x: auto;
-                       border-top: 1px solid var(--linea-clara);
-                       border-bottom: 1px solid var(--linea-clara); }
+                       border-top: 1px solid var(--linea);
+                       border-bottom: 1px solid var(--linea); }
 .vs-arbol svg, .vs-curva svg { display: block; width: 100%; height: auto; min-width: 560px;
                                font-family: var(--grotesca); }
 .vs-curva svg { max-width: 520px; min-width: 400px; }
-.vs-banda { fill: #f4f4f4; }
-.vs-rama { fill: none; stroke: #c4c4c4; stroke-width: 1.2; stroke-linejoin: round; }
-.vs-rama.vs-rama-hallazgo { stroke: var(--negro); stroke-width: 1.8; }
-.vs-corte { stroke: var(--negro); stroke-width: 1; stroke-dasharray: 3 4; opacity: .5; }
+.vs-banda { fill: rgba(255, 255, 255, .035); }
+.vs-rama { fill: none; stroke: #52525b; stroke-width: 1.3; stroke-linejoin: round; }
+.vs-rama.vs-rama-hallazgo { stroke: var(--tinta-3); stroke-width: 2; }
+.vs-corte { stroke: var(--tinta-3); stroke-width: 1; stroke-dasharray: 3 4; }
 .vs-punto { fill: var(--c); }
-.vs-plan-marca { fill: var(--negro); }
-.vs-plan-num { fill: var(--blanco); font: 400 12px var(--mono); }
-.vs-arbol-nombre { fill: var(--gris-texto); font: 400 12px var(--mono); }
-.vs-arbol-nombre.vs-arbol-sel { fill: var(--negro); font-weight: 600; }
-.vs-arbol-eje, .vs-arbol-n { fill: #9a9a9a; font: 400 10px var(--mono);
+.vs-plan-marca { fill: var(--tinta); }
+.vs-plan-num { fill: var(--fondo); font: 400 12px var(--mono); }
+.vs-arbol-nombre { fill: var(--tinta-2); font: 400 12px var(--mono); }
+.vs-arbol-nombre.vs-arbol-sel { fill: var(--tinta); font-weight: 600; }
+.vs-arbol-eje, .vs-arbol-n { fill: var(--tinta-3); font: 400 10px var(--mono);
                              letter-spacing: .04em; }
 .vs-leyenda-arbol { margin: 0 0 28px; }
-.vs-grilla { stroke: var(--linea-clara); stroke-width: 1; }
-.vs-linea-plan { fill: none; stroke: var(--negro); stroke-width: 2.5; stroke-linejoin: round; }
-.vs-linea-ranking { fill: none; stroke: #9a9a9a; stroke-width: 1.8; stroke-dasharray: 5 4;
-                    stroke-linejoin: round; }
-.vs-punto-plan { fill: var(--negro); }
-.vs-punto-ranking { fill: #9a9a9a; }
-.vs-etq-plan { fill: var(--negro); font: 600 11px var(--mono); }
-.vs-etq-ranking { fill: #6b6b6b; font: 400 11px var(--mono); }
+.vs-grilla { stroke: var(--linea); stroke-width: 1; }
+.vs-linea-plan { fill: none; stroke: var(--aqua); stroke-width: 2.5; stroke-linejoin: round; }
+.vs-linea-ranking { fill: none; stroke: var(--tinta-3); stroke-width: 1.8;
+                    stroke-dasharray: 5 4; stroke-linejoin: round; }
+.vs-punto-plan { fill: var(--aqua); }
+.vs-punto-ranking { fill: var(--tinta-3); }
+.vs-etq-plan { fill: var(--aqua); font: 600 11px var(--mono); }
+.vs-etq-ranking { fill: var(--tinta-3); font: 400 11px var(--mono); }
 
 @media (max-width: 760px) {
   .vs-tarjetas { grid-template-columns: minmax(0, 1fr); }
   .vs-tarjeta { border-right: none; margin-right: 0;
-                border-bottom: 1px solid var(--linea-clara); }
-  .vs-nombres span { font-size: 10px; }
+                border-bottom: 1px solid var(--linea); }
+  .vs-nombres span { font-size: 11px; }
 }

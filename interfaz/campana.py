@@ -37,7 +37,7 @@ def mostrar(motor: Motor):
 
     with seccion("campana_tabla"):
         elegida = _portada_campana(motor, resultados, tabla, es_demo)
-    with seccion("campana_plan"):
+    with seccion("campana_plan", alterna=True):
         _plan_y_seguimiento(motor, resultados, tabla, umbrales)
 
     por_id = {r.id: r for r in resultados}

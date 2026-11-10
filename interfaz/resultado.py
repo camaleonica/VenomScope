@@ -38,10 +38,10 @@ def _nombre_muestra(r) -> str:
 
 
 def _palabra_prioridad(nivel: str) -> str:
-    """La prioridad en letras grandes. Solo la alta lleva resaltador: es la que hay que ver."""
-    texto = marca(nivel) if nivel == prioridad.ALTA else nivel
-    clase = "vs-prioridad" + ("" if nivel in (prioridad.ALTA, prioridad.MEDIA) else " vs-prioridad--baja")
-    return f'<p class="{clase}">{texto}</p>'
+    """La prioridad en letras grandes, con el color que le corresponde en el mapa:
+    naranja la alta, ámbar la media, azul la baja. La palabra dice lo mismo."""
+    clase = componentes.CLASE_PRIORIDAD.get(nivel, "nula")
+    return f'<p class="vs-prioridad vs-n-{clase}">{html.escape(nivel)}</p>'
 
 
 def mostrar_resultado(r, motor: Motor, clave: str = "mapa", n: int = 2, total: int = 3,
@@ -113,7 +113,7 @@ def _respuesta(r, clave: str, umbrales: dict):
 
 
 def _mapa(r, motor: Motor, clave: str, n: int, total: int):
-    with seccion(f"mapa_{clave}", oscura=True):
+    with seccion(f"mapa_{clave}", alterna=True):
         bloque(cabeza(n, total, "Mapa", "Dónde c[a]e|en el m[a]pa"))
         # key fija + uirevision en la figura: si el usuario giró el mapa y después
         # mueve el deslizante del umbral, no se le resetea la vista.

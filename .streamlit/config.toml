@@ -1,24 +1,24 @@
-# Diseño editorial: negro y blanco puros y un solo acento (el azul de resaltador).
-# Los detalles (grilla, títulos, secciones negras) están en interfaz/estilo.css.
-# El mapa 3D no usa este tema: va siempre sobre negro, con su propia paleta (venomscope/mapa.py).
+# Diseño editorial oscuro. La paleta es la del mapa 3D (venomscope/mapa.py), así
+# la app y el gráfico son la misma cosa. Los detalles (grilla, títulos, secciones)
+# están en interfaz/estilo.css.
 
 [server]
 # Sirve static/, donde están las tipografías: así la app no las pide a internet.
 enableStaticServing = true
 
 [theme]
-base = "light"
-backgroundColor = "#ffffff"
-secondaryBackgroundColor = "#ffffff"
-textColor = "#000000"
-primaryColor = "#000000"
-borderColor = "#000000"
-linkColor = "#000000"
+base = "dark"
+backgroundColor = "#09090b"
+secondaryBackgroundColor = "#121216"
+textColor = "#e4e4e7"
+primaryColor = "#d95926"       # el naranja de "tu secuencia" en el mapa
+borderColor = "#27272a"
+linkColor = "#3987e5"
 baseRadius = "none"
 font = "Space Grotesk"
 headingFont = "Space Grotesk"
 codeFont = "JetBrains Mono"
-codeBackgroundColor = "#ffffff"
+codeBackgroundColor = "#121216"
 chartCategoricalColors = ["#3987e5", "#d95926", "#199e70"]
 
 [[theme.fontFaces]]
