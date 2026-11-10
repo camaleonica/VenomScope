@@ -10,6 +10,7 @@ La lógica (guardar, reconocer, sumar a la referencia) está en `venomscope/segu
 import pandas as pd
 import streamlit as st
 
+from interfaz.editorial import bloque, subtitulo
 from venomscope import prioridad, seguimiento
 from venomscope.analisis import Motor
 
@@ -29,7 +30,7 @@ def mostrar_seguimiento(motor: Motor, resultados: list, altas_ahora: int) -> Non
     libro = seguimiento.Libro()
     confirmadas = libro.leer()
 
-    st.markdown("##### Seguimiento del laboratorio")
+    bloque(subtitulo(2, "Seguimiento del laboratorio"))
     st.markdown(
         "Cuando el laboratorio estudia una muestra, confirmala acá. Se suma a lo que el sistema conoce: "
         "sus parientes dejan de aparecer como novedad y el plan se rearma sin ella.")

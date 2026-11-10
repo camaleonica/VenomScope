@@ -1,8 +1,14 @@
 """Lo que usan varias pantallas: el motor, el control de sensibilidad y la barra lateral."""
 import streamlit as st
 
+from venomscope import seguimiento
 from venomscope.analisis import ARTIFACTS, Motor
 from venomscope.lectura import leer_archivo
+
+# Las campañas de prueba. La redundante existe para que se vea qué aporta el plan
+# de laboratorio: trae varias variantes del mismo hallazgo.
+CAMPANAS_DE_PRUEBA = {"General": "campana_demo.csv",
+                      "Con variantes repetidas": "campana_redundante.csv"}
 
 
 OPCIONES_NEA = {"Sí": True, "No": False, "No sé": None}
@@ -13,15 +19,39 @@ def obtener_motor() -> Motor:
     return Motor()
 
 
+def motor_con_seguimiento(base: Motor) -> Motor:
+    """El motor, más lo que el laboratorio ya confirmó (ver `seguimiento.py`).
+
+    El motor base lo comparte toda la app y no se toca: se arma una copia ampliada, y
+    solo cuando cambia lo confirmado. Si no hay nada confirmado, es el mismo de siempre.
+    """
+    confirmadas = seguimiento.Libro().leer()
+    firma = seguimiento.firma_de(confirmadas)
+    guardado = st.session_state.get("_motor_seguimiento")
+    if guardado and guardado[0] == firma and guardado[2] is base:
+        return guardado[1]
+    try:
+        motor = base.con_confirmadas(confirmadas)
+    except Exception as e:                  # el seguimiento nunca tiene que tumbar la app
+        st.warning(f"No se pudo cargar el seguimiento del laboratorio ({e}). "
+                   "Se usa solo el catálogo.")
+        return base
+    st.session_state["_motor_seguimiento"] = (firma, motor, base)
+    return motor
+
+
 @st.cache_resource(show_spinner="Analizando la campaña de demostración...")
-def campana_demo(_motor: Motor) -> list:
+def campana_demo(_motor: Motor, archivo: str, firma: str) -> list:
     """La campaña de prueba, analizada una sola vez por sesión.
 
     Es lo que ve el usuario al abrir la app, así que no se le pide que cargue
     nada para entender el producto. De paso deja ESM-2 cargado en memoria, así
     la primera consulta propia ya sale instantánea.
+
+    `firma` no se usa adentro: está para que, cuando el laboratorio confirma algo y el
+    motor cambia, la campaña se vuelva a analizar en vez de devolver la guardada.
     """
-    ruta = ARTIFACTS.parent / "ejemplos" / "campana_demo.csv"
+    ruta = ARTIFACTS.parent / "ejemplos" / archivo
     return _motor.analizar(leer_archivo(ruta.name, ruta.read_bytes(), None))
 
 

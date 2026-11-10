@@ -13,6 +13,7 @@ import pandas as pd
 import streamlit as st
 
 from interfaz import componentes
+from interfaz.editorial import bloque, subtitulo
 from interfaz.estilo import mostrar_html
 from venomscope import plan
 from venomscope.analisis import Motor
@@ -43,16 +44,13 @@ class PlanMostrado:
 
 def mostrar_plan(motor: Motor, resultados: list) -> PlanMostrado | None:
     analizadas = [r for r in resultados if r.embedding is not None]
-    st.markdown("##### Plan de laboratorio")
+    bloque(subtitulo(1, "Plan de laboratorio"))
     if len(analizadas) < 3:
         st.caption("Hacen falta al menos 3 muestras analizadas para armar un plan.")
         return None
 
     corte, _ = _corte_del_catalogo(motor)
 
-    st.markdown(
-        "Ordenar por novedad no alcanza: si varias muestras son variantes de lo mismo, todas quedan "
-        "arriba y gastan cupos en un solo hallazgo. El plan elige las que **representan** a toda la campaña.")
     maximo = min(MAXIMO_CUPOS, len(analizadas))
     # Si antes se analizó una campaña más grande, el valor guardado podría pasarse del nuevo máximo.
     if st.session_state.get("cupos_plan", 1) > maximo:
@@ -86,7 +84,7 @@ def mostrar_plan(motor: Motor, resultados: list) -> PlanMostrado | None:
         nombres, niveles, armado.Z, etiquetas, corte, {i: k + 1 for k, i in enumerate(orden[:cupos])}))
     mostrar_html(componentes.leyenda_arbol())
 
-    izquierda, derecha = st.columns([3, 2], gap="large")
+    izquierda, derecha = st.columns([5, 3], gap="large")
     with izquierda:
         filas = []
         for lugar, e in enumerate(elegidas[:cupos], start=1):
@@ -102,7 +100,7 @@ def mostrar_plan(motor: Motor, resultados: list) -> PlanMostrado | None:
                 "Aporta", format="percent", help="Cobertura nueva que suma esta muestra a las anteriores."),
             "Equivale a": st.column_config.NumberColumn(
                 "Equivale a", help="Otras muestras del mismo hallazgo: estudiar esta alcanza para todas."),
-            "Familia probable": st.column_config.TextColumn(width="large"),
+            "Familia probable": st.column_config.TextColumn(width="medium"),
         })
     with derecha:
         mostrar_html(componentes.curva_plan(c_plan, c_ranking, cupos))

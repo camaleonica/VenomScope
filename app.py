@@ -8,7 +8,7 @@ cálculo en `venomscope/`.
 import streamlit as st
 
 from interfaz import ayuda, campana, intro, una
-from interfaz.comun import barra_lateral, obtener_motor
+from interfaz.comun import barra_lateral, motor_con_seguimiento, obtener_motor
 from interfaz.editorial import aplicar_estilo, bloque
 
 st.set_page_config(page_title="VenomScope", layout="wide", initial_sidebar_state="collapsed")
@@ -23,7 +23,8 @@ bloque("""
 """)
 
 try:
-    motor = obtener_motor()
+    # El motor base más lo que el laboratorio ya confirmó (ver venomscope/seguimiento.py).
+    motor = motor_con_seguimiento(obtener_motor())
 except FileNotFoundError:
     st.error("Faltan los archivos del modelo en `artifacts/`. Generalos con:\n\n"
              "`.venv/bin/python scripts/construir_artefactos.py`")

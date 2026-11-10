@@ -394,3 +394,116 @@ hr { border-color: var(--negro) !important; }
   .vs-cabecera span:nth-child(2) { display: none; }
   [class*="st-key-blanca_"], [class*="st-key-negra_"] { padding: 56px var(--margen) 64px var(--margen); }
 }
+
+/* ===========================================================================
+ * LAS PIEZAS DE interfaz/componentes.py, VESTIDAS DE EDITORIAL
+ *
+ * El HTML y los SVG son los de componentes.py, sin tocar. Acá se reemplaza su
+ * hoja original (interfaz/estilo.py, pensada para la app oscura) por una en el
+ * lenguaje de esta: blanco y negro, un acento, sin esquinas redondeadas.
+ *
+ * La prioridad se distingue por CONTRASTE, no por matiz: cuanto más urgente,
+ * más oscuro. Se lee igual en un proyector malo y en blanco y negro. El color
+ * nunca dice algo solo: al lado siempre está la palabra.
+ * ========================================================================= */
+
+.vs-n-alta  { --c: var(--negro); --ct: var(--negro); --cf: var(--acento); }
+.vs-n-media { --c: #6b6b6b;      --ct: #4a4a4a;      --cf: #f0f0f0; }
+.vs-n-baja  { --c: #b8b8b8;      --ct: #8a8a8a;      --cf: #f8f8f8; }
+.vs-n-nula  { --c: #dcdcdc;      --ct: #9a9a9a;      --cf: #fcfcfc; }
+
+/* --------------------------------------------------- la escala de novedad -- */
+.vs-escala { margin: 24px 0 28px; }
+.vs-escala-tit { font-family: var(--mono); font-size: 11px; letter-spacing: .06em;
+                 text-transform: uppercase; margin-bottom: 26px; }
+.vs-escala-cuerpo { padding: 22px 14px 0 0; }   /* aire a la derecha: el 100 no se corta */
+.vs-pista { position: relative; display: flex; gap: 2px; height: 14px; }
+.vs-zona { background: var(--c); opacity: .3; }
+.vs-zona.vs-zona-activa { opacity: 1; }
+.vs-pista .vs-marca { position: absolute; left: var(--p); top: -8px; bottom: -8px; width: 2px;
+                      margin-left: -1px; background: var(--negro); }
+.vs-pista .vs-marca-etq { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+                          margin-bottom: 6px; padding: 1px 6px; background: var(--negro);
+                          color: var(--blanco); font: 400 12px var(--mono); }
+.vs-nombres, .vs-numeros { display: flex; gap: 2px; }
+.vs-nombres span { padding-top: 10px; font-size: 12px; color: var(--gris-texto);
+                   white-space: nowrap; }
+.vs-nombres span.vs-nombre-activo { font-weight: 600; color: var(--negro); }
+.vs-numeros span { padding-top: 4px; font: 400 11px var(--mono); color: #9a9a9a; }
+.vs-numeros span.vs-fin { display: flex; justify-content: space-between; gap: 8px; }
+.vs-fin em { font-style: normal; }
+
+/* ------------------------------------------------------------ el veredicto -- */
+.vs-veredicto { max-width: 68ch; margin: 8px 0 24px; padding: 2px 0 2px 16px;
+                border-left: 3px solid var(--c); font-size: 15px; line-height: 1.5; }
+.vs-veredicto strong { font-weight: 600; }
+
+/* ------------------------------------------ la banda de proporciones -------- */
+.vs-dist { margin: 0 0 16px; }
+.vs-dist-barra { display: flex; gap: 2px; height: 10px; }
+.vs-dist-barra span { min-width: 6px; background: var(--c); }
+.vs-dist-ley { display: flex; flex-wrap: wrap; gap: 6px 28px; margin-top: 12px;
+               font-family: var(--mono); font-size: 11px; letter-spacing: .04em;
+               text-transform: uppercase; color: var(--gris-texto); }
+.vs-ley i { display: inline-block; width: 10px; height: 10px; margin-right: 7px;
+            background: var(--c, #b8b8b8); }
+.vs-ley i.vs-ley-plan { background: var(--negro); border-radius: 50%; }
+.vs-ley i.vs-ley-banda { background: #ededed; border: 1px solid var(--linea-clara); }
+.vs-ley b { font-family: var(--mono); font-weight: 600; color: var(--negro); }
+
+/* -------------------------------------------------- las tarjetas destacadas -- */
+.vs-tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+               gap: 0; margin: 0 0 24px; border-top: 1px solid var(--negro); }
+.vs-tarjeta { display: flex; flex-direction: column; gap: 6px; min-width: 0;
+              padding: 16px 24px 16px 0; margin-right: 24px;
+              border-right: 1px solid var(--linea-clara); border-top: 4px solid var(--c);
+              margin-top: -1px; }
+.vs-tarjeta:last-child { border-right: none; margin-right: 0; }
+.vs-tarjeta-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.vs-tarjeta-id { overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+                 font: 400 13px var(--mono); }
+.vs-nivel { flex: none; font-family: var(--mono); font-size: 11px; text-transform: uppercase;
+            letter-spacing: .06em; color: var(--ct); }
+.vs-tarjeta-fam { font-size: 15px; font-weight: 600; line-height: 1.25; letter-spacing: -.01em; }
+.vs-tarjeta-sub { font-size: var(--texto-chico); line-height: 1.45; color: var(--gris-texto); }
+.vs-mini { display: flex; align-items: center; gap: 10px; margin-top: 4px;
+           font-family: var(--mono); font-size: 10px; text-transform: uppercase;
+           letter-spacing: .06em; color: var(--gris-texto); }
+.vs-mini-barra { flex: 1; height: 4px; overflow: hidden; background: var(--linea-clara); }
+.vs-mini-barra i { display: block; height: 100%; background: var(--c); }
+.vs-mini b { font: 400 13px var(--mono); color: var(--negro); }
+
+/* ------------------------------------------------- el arbol y la curva ------ */
+.vs-arbol, .vs-curva { margin: 16px 0; padding: 0; overflow-x: auto;
+                       border-top: 1px solid var(--linea-clara);
+                       border-bottom: 1px solid var(--linea-clara); }
+.vs-arbol svg, .vs-curva svg { display: block; width: 100%; height: auto; min-width: 560px;
+                               font-family: var(--grotesca); }
+.vs-curva svg { max-width: 520px; min-width: 400px; }
+.vs-banda { fill: #f4f4f4; }
+.vs-rama { fill: none; stroke: #c4c4c4; stroke-width: 1.2; stroke-linejoin: round; }
+.vs-rama.vs-rama-hallazgo { stroke: var(--negro); stroke-width: 1.8; }
+.vs-corte { stroke: var(--negro); stroke-width: 1; stroke-dasharray: 3 4; opacity: .5; }
+.vs-punto { fill: var(--c); }
+.vs-plan-marca { fill: var(--negro); }
+.vs-plan-num { fill: var(--blanco); font: 400 12px var(--mono); }
+.vs-arbol-nombre { fill: var(--gris-texto); font: 400 12px var(--mono); }
+.vs-arbol-nombre.vs-arbol-sel { fill: var(--negro); font-weight: 600; }
+.vs-arbol-eje, .vs-arbol-n { fill: #9a9a9a; font: 400 10px var(--mono);
+                             letter-spacing: .04em; }
+.vs-leyenda-arbol { margin: 0 0 28px; }
+.vs-grilla { stroke: var(--linea-clara); stroke-width: 1; }
+.vs-linea-plan { fill: none; stroke: var(--negro); stroke-width: 2.5; stroke-linejoin: round; }
+.vs-linea-ranking { fill: none; stroke: #9a9a9a; stroke-width: 1.8; stroke-dasharray: 5 4;
+                    stroke-linejoin: round; }
+.vs-punto-plan { fill: var(--negro); }
+.vs-punto-ranking { fill: #9a9a9a; }
+.vs-etq-plan { fill: var(--negro); font: 600 11px var(--mono); }
+.vs-etq-ranking { fill: #6b6b6b; font: 400 11px var(--mono); }
+
+@media (max-width: 760px) {
+  .vs-tarjetas { grid-template-columns: minmax(0, 1fr); }
+  .vs-tarjeta { border-right: none; margin-right: 0;
+                border-bottom: 1px solid var(--linea-clara); }
+  .vs-nombres span { font-size: 10px; }
+}

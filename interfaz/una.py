@@ -27,10 +27,13 @@ def mostrar(motor: Motor):
 
     if "resultado_una" in st.session_state:
         resultado = st.session_state["resultado_una"]
+        umbrales = None
         if resultado.validacion.es_valida:
             with seccion("una_sensibilidad"):
-                reevaluar([resultado], control_umbral(motor, "umbral_una"))
-        mostrar_resultado(resultado, motor, clave="mapa_una", n=2, total=TOTAL)
+                umbrales = control_umbral(motor, "umbral_una")
+            reevaluar([resultado], umbrales)
+        mostrar_resultado(resultado, motor, clave="mapa_una", n=2, total=TOTAL,
+                          umbrales=umbrales)
 
 
 def _entrada(motor: Motor):

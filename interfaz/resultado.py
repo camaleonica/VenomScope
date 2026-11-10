@@ -7,6 +7,7 @@ import html
 
 import streamlit as st
 
+from interfaz import componentes
 from interfaz.editorial import bloque, cabeza, marca, seccion, subtitulo
 from venomscope import prioridad
 from venomscope.analisis import Motor
@@ -43,21 +44,27 @@ def _palabra_prioridad(nivel: str) -> str:
     return f'<p class="{clase}">{texto}</p>'
 
 
-def mostrar_resultado(r, motor: Motor, clave: str = "mapa", n: int = 2, total: int = 3):
-    """`n` y `total` numeran las secciones: el resultado es la n y el mapa la n + 1."""
+def mostrar_resultado(r, motor: Motor, clave: str = "mapa", n: int = 2, total: int = 3,
+                      umbrales: dict | None = None):
+    """`n` y `total` numeran las secciones: el resultado es la n y el mapa la n + 1.
+
+    `umbrales` son los cortes que está usando el control de sensibilidad, para que la
+    escala de novedad dibuje las zonas donde el usuario las dejó.
+    """
+    umbrales = umbrales or motor.config["novedad"]["umbrales_puntaje"]
     with seccion(f"resultado_{clave}"):
         if not r.validacion.es_valida:
             bloque(cabeza(n, total, "Resultado", "No se pu[d]o|analizar") + _nombre_muestra(r))
             st.error("**No se pudo analizar esta secuencia.**\n\n" + "\n\n".join(r.validacion.errores))
             return
         bloque(cabeza(n, total, "Resultado", "Re[s]ultado") + _nombre_muestra(r))
-        _respuesta(r, clave)
+        _respuesta(r, clave, umbrales)
 
     if r.punto3d is not None:
         _mapa(r, motor, clave, n + 1, total)
 
 
-def _respuesta(r, clave: str):
+def _respuesta(r, clave: str, umbrales: dict):
     c1, c2, c3 = st.columns(3)
     c1.markdown("Prioridad", help="Qué tan urgente es estudiarla en el laboratorio. Sale de "
                                   "reglas fijas, no de la IA: abajo dice por qué.")
@@ -83,6 +90,7 @@ def _respuesta(r, clave: str):
     with st.expander("Por qué le dio esta prioridad"):
         st.markdown("\n".join(f"- {razon}" for razon in r.prioridad.razones))
 
+    bloque(componentes.escala_novedad(r.novedad.puntaje, umbrales, "Escala de novedad"))
     bloque(subtitulo(1, "Las cinco toxinas del catálogo más parecidas"))
     vecinos = r.vecinos.assign(
         grupo=[nombre_grupo(g) for g in r.vecinos["grupo"]],
