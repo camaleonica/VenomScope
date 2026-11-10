@@ -18,3 +18,10 @@ artifacts/*.joblib
 # Lo que el laboratorio confirma desde la app: estado local, no codigo.
 # Se borra desde la propia pantalla con "Vaciar todo".
 datos/
+
+# Capturas de pantalla sueltas en la raiz: salen de probar la app y no son del
+# proyecto. Las de la interfaz van en assets/img/, que se versiona aparte.
+/*.png
+
+# Registros de ejecucion (preparar_demo.log y companania).
+*.log

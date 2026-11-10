@@ -49,7 +49,7 @@ Son cinco archivos en `artifacts/`, y los generan por igual la sección 7 del No
 - **Reglas de prioridad**: están en `venomscope/prioridad.py`, en la sección REGLAS, y son explícitas a propósito.
 - **Qué número reportar**: los dos. 93 sobre 100 en el examen estándar y 66 en el examen que agrupa las secuencias casi idénticas, que es el realista.
 - **Sin emojis en la interfaz** (hay un test que lo verifica).
-- **Diseño editorial** (reemplazó al tema oscuro): blanco y negro puros, un único acento `#C7DDF2` como resaltador, grilla de 1px, títulos enormes con letras en Silkscreen. Todo el aspecto vive en `interfaz/estilo.css` y las piezas en `interfaz/editorial.py`. El mapa 3D es la excepción: bloque negro con su paleta propia. Tipografías en `static/fuentes/` (anda sin internet); fotos en `assets/img/` (ver su README).
+- **Diseño editorial oscuro** (reemplazó al tema oscuro de Streamlit): fondo negro puro, grilla de 1px, títulos enormes con letras en Silkscreen. La paleta es la del mapa 3D y los acentos siempre significan lo mismo: naranja alta/novedosa, ámbar media, azul baja, aqua los vecinos; el celeste `#C7DDF2` es solo el resaltador. Todo el aspecto vive en `interfaz/estilo.css` y las piezas en `interfaz/editorial.py`. Tipografías en `static/fuentes/` (anda sin internet); fotos en `assets/img/` (ver su README).
 
 ## Lo que hace la app (Streamlit)
 Entrada: una secuencia pegada o un archivo FASTA/CSV con varias.
@@ -83,10 +83,16 @@ venomscope/
 │   ├── plan.py             # plan de laboratorio: hallazgos y elección con presupuesto
 │   ├── seguimiento.py      # muestras que el laboratorio confirmó (datos/seguimiento.csv)
 │   └── cache_embeddings.py # caché de embeddings (envuelve a embeber, no lo modifica)
-├── scripts/construir_artefactos.py
-├── artifacts/              # salidas del notebook (no versionar archivos grandes)
-├── notebooks/              # copias de los notebooks de Colab
+├── scripts/                # construir artefactos, precalentar la caché, simulaciones
+├── artifacts/              # los cinco archivos del contrato (los .npy y .joblib no se versionan)
+├── assets/img/             # las fotos de la interfaz (ver su README)
+├── static/fuentes/         # tipografías propias: la app no las pide a internet
+├── ejemplos/               # campañas de prueba (FASTA y CSV)
+├── resultados/             # salida de las simulaciones del plan y del seguimiento
+├── docs/                   # marco teórico, conclusión y diagrama de arquitectura
 ├── tests/
+├── Notebook1_*.ipynb       # en la RAÍZ a propósito: Colab sincroniza contra esta ruta
+├── Notebook2_*.ipynb       #   (ver README, "Los notebooks"). No moverlos a notebooks/.
 ├── requirements.txt
 └── README.md               # cómo instalar y correr, paso a paso
 ```
