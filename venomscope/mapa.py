@@ -39,12 +39,12 @@ AQUA = "#199e70"      # sus vecinos más parecidos
 # El color saturado se reserva para lo que cambia en cada consulta. El catálogo,
 # que es el telón de fondo, va apagado para no competir.
 GRIS_PUNTOS = "#52525b"
-SUPERFICIE = "#09090b"
-GRILLA = "#27272a"
-EJES = "#3f3f46"
+SUPERFICIE = "#000000"
+GRILLA = "#242424"
+EJES = "#3a3a3a"
 TINTA = "#a1a1aa"
 TINTA_CLARA = "#e4e4e7"
-FONDO_TOOLTIP = "#18181b"
+FONDO_TOOLTIP = "#121212"
 
 # Monoespaciada para números y etiquetas. La lista es una cadena de respaldo: si
 # JetBrains Mono no está instalada, el navegador baja a la siguiente.
@@ -139,7 +139,7 @@ def figura_3d(motor, resultado=None, altura: int = 620) -> go.Figure:
         text=f"<b>novedad {resultado.novedad.puntaje:.0f}/100</b><br>{resultado.novedad.nivel}",
         showarrow=True, arrowhead=0, arrowwidth=1.5, arrowcolor=NARANJA,
         ax=70, ay=-55, font=dict(size=11, color=TINTA_CLARA, family=MONO),
-        bgcolor="rgba(24,24,27,0.92)", bordercolor=NARANJA, borderwidth=1, borderpad=5,
+        bgcolor="rgba(10,10,10,0.94)", bordercolor=NARANJA, borderwidth=1, borderpad=5,
     ))
     return fig
 
@@ -192,7 +192,7 @@ def _ejes(fig: go.Figure, altura: int, puntos, anotacion: dict | None = None) ->
             annotations=[anotacion] if anotacion else [],
         ),
         legend=dict(orientation="h", yanchor="top", y=1.0, x=0,
-                    bgcolor="rgba(9,9,11,0.85)", bordercolor=EJES, borderwidth=1,
+                    bgcolor="rgba(0,0,0,0.85)", bordercolor=EJES, borderwidth=1,
                     font=dict(size=10, color=TINTA, family=MONO)),
         hoverlabel=dict(bgcolor=FONDO_TOOLTIP, bordercolor=EJES,
                         font=dict(family=MONO, size=11, color=TINTA_CLARA)),

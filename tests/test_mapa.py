@@ -61,10 +61,18 @@ def test_el_mapa_es_identico_entre_ejecuciones(motor):
 
 
 def test_la_estetica_oscura_esta_aplicada(motor):
+    """El gráfico usa la paleta del módulo, no colores sueltos.
+
+    Se compara contra las constantes y no contra códigos escritos a mano: la
+    paleta la comparten el mapa y la app (interfaz/estilo.css), así que cuando
+    cambia hay que cambiarla en un solo lugar.
+    """
+    from venomscope.mapa import FONDO_TOOLTIP, GRILLA, SUPERFICIE
+
     fig = figura_3d(motor)
-    assert fig.layout.paper_bgcolor == "#09090b"
-    assert fig.layout.scene.xaxis.gridcolor == "#27272a"
-    assert fig.layout.hoverlabel.bgcolor == "#18181b"
+    assert fig.layout.paper_bgcolor == SUPERFICIE == "#000000"
+    assert fig.layout.scene.xaxis.gridcolor == GRILLA
+    assert fig.layout.hoverlabel.bgcolor == FONDO_TOOLTIP
     assert "Mono" in fig.layout.font.family
 
 

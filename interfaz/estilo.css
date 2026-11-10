@@ -21,14 +21,14 @@
  */
 
 :root {
-  --fondo: #09090b;            /* el fondo de todo, igual que la superficie del mapa */
-  --fondo-2: #121216;          /* las secciones alternas: un escalón más claro */
+  --fondo: #000000;            /* negro puro, igual que la superficie del mapa */
+  --fondo-2: #0a0a0a;          /* las secciones alternas: apenas un escalón, no gris */
   --tinta: #f4f4f5;            /* títulos y texto fuerte */
   --tinta-2: #c4c4cc;          /* el texto corrido */
   --tinta-3: #8b8b94;          /* rótulos, números de eje, lo secundario */
-  --linea: #27272a;            /* bordes y filetes */
-  --linea-2: #3f3f46;          /* bordes de algo que se puede tocar */
-  --grilla: #161619;           /* la grilla del fondo */
+  --linea: #242424;            /* bordes y filetes */
+  --linea-2: #3a3a3a;          /* bordes de algo que se puede tocar */
+  --grilla: #131313;           /* la grilla del fondo */
 
   --alta: #d95926;             /* naranja: prioridad alta, novedosa */
   --media: #d9a21c;            /* ámbar:   prioridad media, algo distinta */
@@ -80,8 +80,8 @@ h1, h2, h3, h4, h5, h6, strong, b { color: var(--tinta); }
 [class*="st-key-tono2_"] {
   background-color: var(--fondo-2);
   background-image:
-    linear-gradient(to right, #1c1c21 1px, transparent 1px),
-    linear-gradient(to bottom, #1c1c21 1px, transparent 1px);
+    linear-gradient(to right, #191919 1px, transparent 1px),
+    linear-gradient(to bottom, #191919 1px, transparent 1px);
   background-size: calc(100vw / 12) var(--modulo);
   background-attachment: fixed;
 }
@@ -456,7 +456,7 @@ hr { border-color: var(--linea) !important; }
 .vs-n-alta  { --c: var(--alta);  --ct: #f2906a; --cf: rgba(217, 89, 38, .16); }
 .vs-n-media { --c: var(--media); --ct: #ecc462; --cf: rgba(217, 162, 28, .16); }
 .vs-n-baja  { --c: var(--baja);  --ct: #82b3f1; --cf: rgba(57, 135, 229, .16); }
-.vs-n-nula  { --c: #52525b;      --ct: var(--tinta-3); --cf: rgba(113, 113, 122, .14); }
+.vs-n-nula  { --c: #4a4a4a;      --ct: var(--tinta-3); --cf: rgba(120, 120, 120, .14); }
 
 /* --------------------------------------------------- la escala de novedad -- */
 .vs-escala { margin: 24px 0 28px; }
@@ -534,7 +534,7 @@ hr { border-color: var(--linea) !important; }
                                font-family: var(--grotesca); }
 .vs-curva svg { max-width: 520px; min-width: 400px; }
 .vs-banda { fill: rgba(255, 255, 255, .035); }
-.vs-rama { fill: none; stroke: #52525b; stroke-width: 1.3; stroke-linejoin: round; }
+.vs-rama { fill: none; stroke: #4a4a4a; stroke-width: 1.3; stroke-linejoin: round; }
 .vs-rama.vs-rama-hallazgo { stroke: var(--tinta-3); stroke-width: 2; }
 .vs-corte { stroke: var(--tinta-3); stroke-width: 1; stroke-dasharray: 3 4; }
 .vs-punto { fill: var(--c); }

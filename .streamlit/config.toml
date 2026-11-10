@@ -8,17 +8,17 @@ enableStaticServing = true
 
 [theme]
 base = "dark"
-backgroundColor = "#09090b"
-secondaryBackgroundColor = "#121216"
+backgroundColor = "#000000"
+secondaryBackgroundColor = "#0a0a0a"
 textColor = "#e4e4e7"
 primaryColor = "#d95926"       # el naranja de "tu secuencia" en el mapa
-borderColor = "#27272a"
+borderColor = "#242424"
 linkColor = "#3987e5"
 baseRadius = "none"
 font = "Space Grotesk"
 headingFont = "Space Grotesk"
 codeFont = "JetBrains Mono"
-codeBackgroundColor = "#121216"
+codeBackgroundColor = "#0a0a0a"
 chartCategoricalColors = ["#3987e5", "#d95926", "#199e70"]
 
 [[theme.fontFaces]]
