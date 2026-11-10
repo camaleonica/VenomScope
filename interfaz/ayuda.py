@@ -64,7 +64,8 @@ enterara.
 - El **mapa** conserva el {motor.config['mapa3d']['varianza_conservada']:.0%} de la información,
   así que la posición de un punto es orientativa. El puntaje y las líneas sí salen del cálculo
   completo.
-- En los **péptidos cortos** no pudimos comprobar qué tan confiable es: los que tenemos son casi
-  todos de una misma familia fácil, así que no sabemos cómo se porta con uno de otra.
+- En los **péptidos cortos** no pudimos comprobar qué tan confiable es: los del catálogo salen de
+  solo cuatro familias, y siete de cada diez son parientes entre sí, así que no sabemos cómo se
+  porta con uno de una familia distinta.
 - Sirve para **ordenar y priorizar**. No reemplaza el análisis de laboratorio.
 """)

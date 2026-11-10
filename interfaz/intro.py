@@ -31,35 +31,44 @@ def mostrar(motor: Motor):
     n_familias = cat.loc[cat["clase_modelable"], "clase"].nunique()
 
     st.markdown("### Del veneno al remedio: a cuál le apostamos")
-    st.markdown(
-        "Los venenos de serpientes, arañas, escorpiones, ranas e insectos están llenos de "
-        "moléculas que la evolución afinó durante millones de años para actuar sobre el "
-        "cuerpo con mucha precisión. Por eso son una de las fuentes de **medicamentos nuevos** "
-        "más prometedoras que hay.\n\n"
-        "El problema es elegir. Una campaña de muestreo en el noreste argentino deja decenas o "
-        "cientos de secuencias, y estudiar cada una en el laboratorio lleva meses. Hoy se elige "
-        "a ojo, y la que no se parecía a nada conocido, que suele ser la más interesante, queda "
-        "olvidada en una planilla. **VenomScope ordena la campaña en segundos y dice cuáles "
-        "mirar primero.**")
+    # El contenedor con nombre es lo que la hoja de estilos usa para justificar el texto.
+    with st.container(key="texto_justificado_intro"):
+        st.markdown(
+            "Los venenos de serpientes, arañas, escorpiones, ranas e insectos contienen moléculas "
+            "bioactivas que la evolución ha perfeccionado durante millones de años para actuar con "
+            "gran precisión sobre el organismo. Por ello, representan una fuente extraordinaria "
+            "para el descubrimiento de nuevos fármacos.\n\n"
+            "El desafío no es encontrarlas, sino elegir cuáles estudiar. Una sola campaña de "
+            "muestreo en el noreste argentino puede generar cientos de secuencias, y analizar cada "
+            "una en el laboratorio requiere meses de trabajo. Muchas moléculas prometedoras pasan "
+            "desapercibidas porque no se parecen a nada conocido. VenomScope analiza y prioriza "
+            "esas secuencias en segundos, ayudando a identificar primero los candidatos con mayor "
+            "potencial biológico y farmacológico.")
 
     st.divider()
     st.markdown("### La biología en un minuto")
-    c1, c2, c3 = st.columns(3, gap="large")
-    with c1:
-        st.markdown(
-            "**Una proteína es un texto.** Se escribe con un alfabeto de 20 letras, los "
-            "**aminoácidos**: por ejemplo `QWPRPQIPP`. Las toxinas son proteínas, y las "
-            "cortas se llaman **péptidos**. Para el sistema, cada una es un *string*.")
-    with c2:
-        st.markdown(
-            "**Las proteínas vienen en familias.** Las que hacen cosas parecidas se parecen "
-            "entre sí, como clases que heredan del mismo padre. Saber la **familia** de una "
-            "toxina da una primera idea de qué hace, sin pisar el laboratorio.")
-    with c3:
-        st.markdown(
-            "**Por qué importa.** El **captopril**, un antihipertensivo de los más vendidos de "
-            "la historia, salió de un péptido de nueve aminoácidos del veneno de la yarará, "
-            "una serpiente que está en nuestro catálogo.")
+    # Los tres párrafos están escritos con un largo parecido (241 a 248 caracteres) para que las
+    # tres columnas queden parejas. Si se los edita, conviene mantener ese largo.
+    with st.container(key="texto_justificado_biologia"):
+        c1, c2, c3 = st.columns(3, gap="large")
+        with c1:
+            st.markdown(
+                "Las proteínas son secuencias de aminoácidos que se representan con un alfabeto de "
+                "20 letras, como `QWPRPQIPP`. Las más cortas se llaman **péptidos** y forman "
+                "muchas toxinas. Para VenomScope, son *strings* que podemos comparar y clasificar "
+                "automáticamente.")
+        with c2:
+            st.markdown(
+                "Las proteínas se agrupan en **familias**, y las más parecidas cumplen funciones "
+                "similares, como clases que heredan de un mismo padre. Identificar la familia de "
+                "una toxina permite predecir su actividad antes de ponerla a prueba en el "
+                "laboratorio.")
+        with c3:
+            st.markdown(
+                "**Por qué importa:** el **captopril**, un fármaco que revolucionó el tratamiento "
+                "de la hipertensión, nació de un péptido de nueve aminoácidos del veneno de la "
+                "yarará, una especie que está en nuestro catálogo y demuestra el valor médico de "
+                "estas secuencias.")
 
     st.divider()
     st.markdown("### Cómo funciona")
@@ -99,8 +108,11 @@ def mostrar(motor: Motor):
                   f"sin IA: {m['macro_f1_composicion'] * 100:.0f}", delta_color="off", delta_arrow="off")
         c2.metric("Familia, examen difícil", f"{m['macro_f1_esm2_agrupado'] * 100:.0f}/100",
                   f"sin IA: {m['macro_f1_composicion_agrupado'] * 100:.0f}", delta_color="off", delta_arrow="off")
+        # El corte sale de la configuración, no escrito a mano: si el grupo lo cambia, este
+        # cartel lo acompaña en vez de quedar mintiendo.
         c3.metric("Avisa de familias nunca vistas", f"{m['reservadas_nivel_alto']:.0%}",
-                  "con el corte en 90", delta_color="off", delta_arrow="off")
+                  f"con el aviso en {motor.config['novedad']['umbrales_puntaje']['alto']}",
+                  delta_color="off", delta_arrow="off")
         st.caption(
             "\"Sin IA\" es el mismo clasificador contando cuántas veces aparece cada letra: lo "
             "que se conseguía sin el modelo de lenguaje. El examen difícil separa las "
@@ -110,9 +122,9 @@ def mostrar(motor: Motor):
 
     st.divider()
     st.markdown("### Probalo")
-    st.markdown(
-        "Andá a la pestaña **Una secuencia** y elegí un ejemplo de la lista: hay una toxina "
-        "que ya conocemos, una de otra parte del mundo que el sistema no vio nunca y una "
-        "secuencia con errores. En **Una campaña entera** está el caso real: muchas "
-        "secuencias de golpe, ordenadas por prioridad. El sistema **ayuda a priorizar**; "
-        "la decisión sigue siendo del laboratorio.")
+    with st.container(key="texto_justificado_probalo"):
+        st.markdown(
+            "Usá **Una secuencia** para probar distintos ejemplos: una toxina conocida, una "
+            "exótica o una secuencia con errores. Para un caso real, pasá a **Una campaña "
+            "entera** y analizá muchas secuencias juntas ordenándolas por prioridad. La "
+            "plataforma ayuda a filtrar, pero la decisión final es del laboratorio.")

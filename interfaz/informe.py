@@ -100,8 +100,8 @@ LIMITES = [
     "novedosa de lo que es, simplemente porque hay menos con qué compararla.",
     "La novedad y la familia son estimaciones de un modelo, no resultados de laboratorio. El sistema siempre "
     "elige alguna familia, aunque la secuencia no se parezca a ninguna: por eso se lee junto con la novedad.",
-    "Los péptidos cortos no se pudieron validar: los del catálogo son casi todos de una misma familia fácil, así "
-    "que no se sabe qué tan confiable es el sistema con uno de otra.",
+    "Los péptidos cortos no se pudieron validar: los del catálogo salen de solo cuatro familias, y siete de cada "
+    "diez son parientes entre sí, así que no se sabe qué tan confiable es el sistema con uno de una familia distinta.",
     "El plan se calculó en simulaciones con campañas armadas con datos reales; en una campaña poco redundante la "
     "ventaja sobre ordenar por novedad es menor.",
     "Sirve para ordenar y priorizar. No reemplaza el análisis de laboratorio: la decisión es de quien lo hace.",

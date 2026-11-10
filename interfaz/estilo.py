@@ -35,6 +35,11 @@ CSS = """
 header[data-testid="stHeader"]{background-color:transparent;z-index:1}
 [data-testid="stMarkdownContainer"] p,[data-testid="stMarkdownContainer"] li{max-width:74ch}
 
+/* Texto justificado. Va por contenedor con nombre (st.container(key=...)) y no suelto en el
+   HTML, para que el texto siga siendo markdown normal. Solo en párrafos anchos: justificar
+   una columna angosta abre huecos feos entre las palabras. */
+[class*="st-key-texto_justificado"] [data-testid="stMarkdownContainer"] p{text-align:justify}
+
 button[data-baseweb="tab"]{padding:.75rem 1.15rem}
 button[data-baseweb="tab"] p{font-size:1rem;font-weight:500}
 
