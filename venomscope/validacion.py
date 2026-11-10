@@ -63,14 +63,15 @@ def validar(secuencia: str) -> ResultadoValidacion:
         )
 
     if r.es_valida and r.es_peptido_corto:
-        # El texto dice lo que medimos, no lo que suponíamos. En la sección 5 del
-        # Notebook 2 el modelo acertó MÁS con los péptidos cortos, pero casi todos los
-        # del catálogo son de una misma familia fácil, así que ese número no se puede
-        # generalizar. Avisamos que no sabemos, en vez de inventar una limitación.
+        # El texto dice lo que medimos, no lo que suponíamos. En la sección 5 del Notebook 2
+        # el modelo acertó MÁS con los péptidos cortos, pero los del catálogo salen de solo
+        # cuatro familias y siete de cada diez son parientes entre sí (péptidos de
+        # bradiquinina), así que ese número no se puede generalizar. Avisamos que no sabemos,
+        # en vez de inventar una limitación.
         r.advertencias.append(
             f"Es un péptido corto ({len(s)} aminoácidos). Los péptidos cortos pueden ser muy "
-            "valiosos: el captopril salió de uno de nueve. Pero casi todos los del catálogo "
-            "son de una sola familia, así que no pudimos comprobar qué tan confiable es el "
+            "valiosos: el captopril salió de uno de nueve. Pero los del catálogo salen de unas "
+            "pocas familias emparentadas, así que no pudimos comprobar qué tan confiable es el "
             "sistema con un péptido corto de una familia distinta."
         )
 

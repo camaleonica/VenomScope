@@ -108,8 +108,11 @@ def mostrar(motor: Motor):
                   f"sin IA: {m['macro_f1_composicion'] * 100:.0f}", delta_color="off", delta_arrow="off")
         c2.metric("Familia, examen difícil", f"{m['macro_f1_esm2_agrupado'] * 100:.0f}/100",
                   f"sin IA: {m['macro_f1_composicion_agrupado'] * 100:.0f}", delta_color="off", delta_arrow="off")
+        # El corte sale de la configuración, no escrito a mano: si el grupo lo cambia, este
+        # cartel lo acompaña en vez de quedar mintiendo.
         c3.metric("Avisa de familias nunca vistas", f"{m['reservadas_nivel_alto']:.0%}",
-                  "con el corte en 90", delta_color="off", delta_arrow="off")
+                  f"con el aviso en {motor.config['novedad']['umbrales_puntaje']['alto']}",
+                  delta_color="off", delta_arrow="off")
         st.caption(
             "\"Sin IA\" es el mismo clasificador contando cuántas veces aparece cada letra: lo "
             "que se conseguía sin el modelo de lenguaje. El examen difícil separa las "

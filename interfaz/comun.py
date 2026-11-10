@@ -56,6 +56,7 @@ def control_umbral(motor: Motor, clave: str) -> dict:
 def barra_lateral(motor: Motor):
     cat = motor.catalogo
     m = motor.config.get("metricas", {})
+    u = motor.config["novedad"]["umbrales_puntaje"]
     with st.sidebar:
         st.markdown("Compara un péptido contra las toxinas del noreste argentino y dice "
                     "a qué se parece, qué tan nuevo es y si conviene investigarlo.")
@@ -80,8 +81,13 @@ def barra_lateral(motor: Motor):
                     "El examen difícil separa las secuencias casi idénticas, así que el "
                     "sistema no puede aprobar de memoria. Es el número realista, y ahí la "
                     "ventaja de la IA se agranda.\n\n"
+                    # Los dos números son del mismo examen y se dan juntos a propósito: antes
+                    # acá figuraba solo el 98% y en la introducción solo el 89%, que es el que
+                    # corresponde al aviso tal como viene puesto. Parecían decir cosas distintas.
                     f"**Avisar de lo desconocido:** de las toxinas de familias que nunca vio, "
-                    f"marca el **{m['reservadas_nivel_medio_o_alto']:.0%}**."
+                    f"marca el **{m['reservadas_nivel_alto']:.0%}** como novedosas con el aviso "
+                    f"en {u['alto']}, y el **{m['reservadas_nivel_medio_o_alto']:.0%}** al menos "
+                    "como algo distintas."
                 )
         guardadas = cache_embeddings.tamano()
         st.caption("Anda sin internet. Es una ayuda para priorizar: la decisión es del laboratorio."
