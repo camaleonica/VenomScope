@@ -1,5 +1,5 @@
 """Pestaña "Cómo leer esto": qué significa cada número y qué no puede hacer el sistema."""
-from interfaz.editorial import bloque, cabeza, marca, numero, seccion
+from interfaz.editorial import bloque, cabeza, foto, marca, numero, seccion
 from venomscope.analisis import Motor
 
 TOTAL = 3
@@ -91,7 +91,16 @@ def _limites(motor: Motor):
     with seccion("ayuda_limites"):
         bloque(f"""
         {cabeza(3, TOTAL, "Los límites", "Qué no p[u]ede|hacer")}
-        {_columnas(items, 4)}
+        <div class="vs-con-foto" style="grid-template-columns:minmax(0,4fr) minmax(0,8fr);
+             align-items:start; margin-bottom:56px">
+          <div>{foto("anemona")}
+            <div class="vs-chico vs-mono" style="margin-top:12px">Anémona de mar</div>
+            <div class="vs-chico">La toxina <b>ShK</b> de una anémona saca 99 de novedad y aun
+            así cae en el <b>medio</b> del mapa. {marca("El dibujo puede mentir")}; el puntaje
+            sale del cálculo completo.</div>
+          </div>
+          {_columnas(items, 2)}
+        </div>
         """)
 
 

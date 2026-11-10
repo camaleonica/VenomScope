@@ -2,7 +2,7 @@
 import streamlit as st
 
 from interfaz.comun import OPCIONES_NEA, control_umbral
-from interfaz.editorial import bloque, cabeza, marca, seccion
+from interfaz.editorial import bloque, cabeza, foto, marca, seccion
 from interfaz.resultado import mostrar_resultado
 from venomscope.analisis import Motor, reevaluar
 from venomscope.ejemplos import EJEMPLOS
@@ -39,10 +39,13 @@ def mostrar(motor: Motor):
 def _entrada(motor: Motor):
     bloque(f"""
     {cabeza(1, TOTAL, "Entrada", "Una se[c]uencia")}
-    <div class="vs-esquina" style="margin-bottom:48px">
+    <div class="vs-con-foto" style="grid-template-columns:minmax(0,7fr) minmax(0,5fr);
+         align-items:end; margin-bottom:48px">
       <div class="vs-chico">Pegá las letras de un péptido, o elegí uno de los ejemplos. En
       segundos dice a qué familia se parece, qué tan nuevo es y
-      {marca("qué prioridad merece")}.</div>
+      {marca("qué prioridad merece")}. Entre los ejemplos hay una toxina que ya conocemos,
+      una de otra parte del mundo que el sistema nunca vio y una secuencia con errores.</div>
+      {foto("ejemplos")}
     </div>
     """)
 

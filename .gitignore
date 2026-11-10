@@ -14,3 +14,7 @@ artifacts/*.joblib
 # macOS
 .DS_Store
 /venv
+
+# Lo que el laboratorio confirma desde la app: estado local, no codigo.
+# Se borra desde la propia pantalla con "Vaciar todo".
+datos/

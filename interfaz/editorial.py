@@ -21,9 +21,11 @@ _CSS = Path(__file__).with_name("estilo.css")
 
 # nombre -> (proporción, tamaño recomendado en píxeles, qué foto va)
 FOTOS = {
-    "portada": ("3:4", (1200, 1600), "Rana o escuerzo sobre fondo liso"),
-    "biologia": ("1:1", (1200, 1200), "Escorpión sobre fondo liso"),
-    "cierre": ("16:9", (1920, 1080), "Muda de piel de serpiente sobre fondo liso"),
+    "portada": ("3:4", (1200, 1600), "Araña viuda negra en su tela"),
+    "biologia": ("1:1", (1200, 1200), "Escuerzo sobre una piedra"),
+    "ejemplos": ("3:2", (1500, 1000), "Anémona de mar"),
+    "anemona": ("1:1", (1200, 1200), "Anémona de mar con los tentáculos abiertos"),
+    "cierre": ("16:9", (1920, 1080), "Serpiente con los colmillos a la vista"),
 }
 
 

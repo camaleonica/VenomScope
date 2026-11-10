@@ -23,5 +23,9 @@ def test_cada_hueco_de_foto_tiene_su_archivo():
 
 
 def test_sin_archivo_la_foto_dice_que_va_ahi(monkeypatch):
+    """El recuadro de reemplazo dice qué foto va y de qué medida, para cada hueco."""
     monkeypatch.setattr("interfaz.editorial.ruta_foto", lambda nombre: None)
-    assert "Rana o escuerzo" in foto("portada")
+    for nombre, (proporcion, (ancho, alto), descripcion) in FOTOS.items():
+        hueco = foto(nombre)
+        assert descripcion in hueco
+        assert f"{ancho}×{alto}" in hueco and proporcion in hueco
