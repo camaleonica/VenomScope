@@ -21,10 +21,13 @@ NOMBRES = {
     "escorpion": "Escorpión",
     "anfibio": "Anfibio",
     "insecto": "Insecto",
+    "laboratorio": "Del laboratorio",
 }
 
 # Solo para la ventanita del mapa 3D (venomscope/mapa.py). Ver el test
 # tests/test_sin_emojis.py, que comprueba que no se escapen a ningún otro lado.
+# "laboratorio" no está acá a propósito: no es un grupo animal, son las muestras
+# que el propio laboratorio confirmó. En el mapa aparece solo con su nombre.
 ICONOS = {
     "serpiente": "\U0001F40D",   # serpiente
     "arana": "\U0001F577",       # araña

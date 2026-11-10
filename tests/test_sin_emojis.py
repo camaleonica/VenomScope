@@ -50,14 +50,24 @@ def test_los_iconos_solo_se_usan_en_el_mapa():
 
     Si algún día aparecen en una tabla o en un título, este test avisa.
     """
-    # Como palabra entera: "ziconotida", un ejemplo del catálogo, contiene "icono".
-    busca = re.compile(r"\b(ICONOS|icono|icono_grupo)\b")
+    # Busca quién define el diccionario y quién lo importa de grupos.py. No
+    # alcanza con buscar "icono" suelto: "ziconotida" lo contiene, y el ícono de
+    # la pestaña del navegador (interfaz/icono.png) es otra cosa.
+    busca = re.compile(r"^ICONOS\b|^from venomscope\.grupos import .*\bicono\b", re.M)
     usan = [f.name for f in ARCHIVOS if busca.search(f.read_text())]
     assert usan == ["grupos.py", "mapa.py"], f"Los íconos se usan en: {usan}"
 
 
-def test_cada_grupo_del_catalogo_tiene_su_icono():
+def test_cada_grupo_animal_tiene_su_icono():
+    """Los cinco grupos de animales llevan ícono. "laboratorio" no, a propósito:
+    son las muestras que el laboratorio confirmó, no un animal."""
     from venomscope.grupos import ICONOS, NOMBRES, icono
-    assert set(ICONOS) == set(NOMBRES)
-    assert all(icono(g) for g in NOMBRES)
+    assert set(ICONOS) == set(NOMBRES) - {"laboratorio"}
+    assert all(icono(g) for g in ICONOS)
+
+
+def test_un_grupo_sin_icono_no_rompe_nada():
+    """Sin ícono la ventanita del mapa muestra solo el nombre, que es lo que importa."""
+    from venomscope.grupos import icono, nombre
+    assert icono("laboratorio") == "" and nombre("laboratorio") == "Del laboratorio"
     assert icono("desconocido") == ""
