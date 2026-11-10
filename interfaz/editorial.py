@@ -23,12 +23,14 @@ CARPETA_FOTOS = Path(__file__).resolve().parents[1] / "assets" / "img"
 _CSS = Path(__file__).with_name("estilo.css")
 
 # nombre -> (proporción, tamaño recomendado en píxeles, qué foto va)
+# La proporción es la del hueco: conviene que sea la de la foto, porque lo que
+# sobra se recorta y el animal puede quedar cortado.
 FOTOS = {
     "portada": ("3:4", (1200, 1600), "Araña viuda negra en su tela"),
-    "biologia": ("1:1", (1200, 1200), "Escuerzo sobre una piedra"),
+    "biologia": ("3:2", (1500, 1000), "Escuerzo sobre una piedra"),
     "ejemplos": ("3:2", (1500, 1000), "Anémona de mar"),
     "anemona": ("1:1", (1200, 1200), "Anémona de mar con los tentáculos abiertos"),
-    "cierre": ("16:9", (1920, 1080), "Serpiente con los colmillos a la vista"),
+    "cierre": ("4:3", (1600, 1200), "Serpiente con los colmillos a la vista"),
 }
 
 

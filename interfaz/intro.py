@@ -78,7 +78,7 @@ def _biologia():
     with seccion("biologia", alterna=True):
         bloque(f"""
         {_cabeza(2, "Biología", "La bio[l]ogía|en un mi[n]uto")}
-        <div class="vs-con-foto">
+        <div class="vs-con-foto" style="grid-template-columns:minmax(0,5fr) minmax(0,7fr)">
           {foto("biologia")}
           <div class="vs-columnas" style="--cols:3">
             <div>{numero(1)}<p class="vs-item-titulo">Una proteína es un texto</p>
