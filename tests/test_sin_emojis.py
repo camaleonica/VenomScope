@@ -1,11 +1,19 @@
 """La interfaz no lleva emojis: decisión de producto, la audiencia es gerencia.
 
+Hay una sola excepción, y está acotada acá: los cinco íconos de grupo animal
+que aparecen en la ventanita del mapa 3D (venomscope/grupos.py -> ICONOS). El
+mapa se proyecta ante gente que no sabe biología y el ícono ubica más rápido
+que el nombre en latín. Estos tests comprueban que la excepción no se escape
+a ningún otro archivo.
+
 Este test existe porque es la clase de cosa que se vuelve a colar sin querer.
 """
+import re
 import unicodedata
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[1]
+ICONOS_DEL_MAPA = RAIZ / "venomscope" / "grupos.py"
 ARCHIVOS = [RAIZ / "app.py", *sorted((RAIZ / "venomscope").glob("*.py")),
             *sorted((RAIZ / "interfaz").glob("*.py"))]
 
@@ -26,3 +34,30 @@ def test_los_ejemplos_y_sus_notas_tampoco():
     from venomscope.ejemplos import EJEMPLOS
     texto = " ".join(k + v["nota"] for k, v in EJEMPLOS.items())
     assert not _emojis(texto)
+
+
+def test_los_iconos_del_mapa_estan_escritos_con_su_codigo():
+    """En grupos.py van como \\U0001F40D y no pegados como carácter.
+
+    Así el archivo se puede abrir en cualquier editor sin que se rompa, y el
+    test de arriba sigue cubriendo venomscope/grupos.py entero.
+    """
+    assert not _emojis(ICONOS_DEL_MAPA.read_text())
+
+
+def test_los_iconos_solo_se_usan_en_el_mapa():
+    """La excepción vale para la ventanita del mapa y nada más.
+
+    Si algún día aparecen en una tabla o en un título, este test avisa.
+    """
+    # Como palabra entera: "ziconotida", un ejemplo del catálogo, contiene "icono".
+    busca = re.compile(r"\b(ICONOS|icono|icono_grupo)\b")
+    usan = [f.name for f in ARCHIVOS if busca.search(f.read_text())]
+    assert usan == ["grupos.py", "mapa.py"], f"Los íconos se usan en: {usan}"
+
+
+def test_cada_grupo_del_catalogo_tiene_su_icono():
+    from venomscope.grupos import ICONOS, NOMBRES, icono
+    assert set(ICONOS) == set(NOMBRES)
+    assert all(icono(g) for g in NOMBRES)
+    assert icono("desconocido") == ""

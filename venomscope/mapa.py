@@ -25,6 +25,7 @@ El catálogo va en gris y las familias se identifican con texto, no con color.
 import numpy as np
 import plotly.graph_objects as go
 
+from venomscope.grupos import icono as icono_grupo
 from venomscope.grupos import nombre as nombre_grupo
 
 # Paleta validada contra el fondo oscuro (ver dataviz/references/palette.md).
@@ -56,9 +57,17 @@ CAMARA_INICIAL = dict(eye=dict(x=1.15, y=1.15, z=0.75))
 
 
 def _hover(cat) -> list[str]:
+    """El texto de la ventanita al apoyar el mouse sobre un punto.
+
+    Lleva el ícono del grupo animal porque el mapa se proyecta ante gente que no
+    sabe biología: ver una rana o un escorpión ubica mucho más rápido que leer
+    el nombre de la especie en latín. El nombre escrito va igual al lado, así
+    que si la computadora no dibuja el ícono no se pierde información.
+    """
     return [
         f"<b>{f.nombre_proteina.split(' (')[0][:55]}</b><br>"
-        f"{f.especie}  ·  {nombre_grupo(f.grupo)}<br>"
+        f"{f.especie}  ·  "
+        f"<span style=\"font-size:15px\">{icono_grupo(f.grupo)}</span> {nombre_grupo(f.grupo)}<br>"
         f"{f.clase}<extra></extra>"
         for f in cat.itertuples()
     ]
